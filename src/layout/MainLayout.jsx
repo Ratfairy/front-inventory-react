@@ -4,20 +4,16 @@ import { Outlet } from "react-router-dom";
 
 export default function MainLayout() {
   return (
-    <div style={{ display: "flex", height: "100vh", overflow: "hidden" }}>
-    
-    <Sidebar />
+    <div className="flex h-screen">
+      <Sidebar />
 
-    <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
-        
+      <div className="flex-1 bg-gray-100 flex flex-col">
         <Topbar />
 
-        <div style={{ flex: 1, overflowY: "auto" }}>
-        <Outlet />
+        <div className="p-6 overflow-auto">
+          <Outlet />
         </div>
-
-    </div>
-
+      </div>
     </div>
   );
 }

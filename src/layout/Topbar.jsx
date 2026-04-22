@@ -19,7 +19,7 @@ export default function Topbar() {
 function getPageTitle(path) {
   switch (path) {
     case "/":
-      return "Request";
+      return "Dashboard";
     case "/purchase":
       return "Purchase";
     case "/receipt":
@@ -27,7 +27,7 @@ function getPageTitle(path) {
     case "/stock":
       return "Stock";
     default:
-      return "Dashboard";
+      return "Request";
   }
 }
 
