@@ -9,3 +9,25 @@ html, body, #root {
 * {
   box-sizing: border-box;
 }
+
+/* Hide scrollbar tapi tetap bisa scroll */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: transparent;
+}
+
+:hover::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.2);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
