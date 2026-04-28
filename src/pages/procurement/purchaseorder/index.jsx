@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "../../../utils/routes";
 
@@ -22,29 +23,52 @@ const dummyPO = [
 
 const STATUS_STYLE = {
   DRAFT: "bg-gray-100 text-gray-600",
-  SENT: "bg-blue-100 text-blue-600",
-  RECEIVED: "bg-green-100 text-green-600",
+  SENT:  "bg-blue-100 text-blue-600",
 };
 
 export default function PurchaseOrderIndex() {
   const navigate = useNavigate();
+  const [search, setSearch] = useState("");
 
-  const formatRupiah = (val) => Number(val || 0).toLocaleString("id-ID");
+  const formatRupiah = (val) =>
+    new Intl.NumberFormat("id-ID", {
+      style: "currency",
+      currency: "IDR",
+      minimumFractionDigits: 0,
+    }).format(val || 0);
+
+  const filtered = dummyPO.filter(po =>
+    po.poNumber.toLowerCase().includes(search.toLowerCase()) ||
+    po.prNumber.toLowerCase().includes(search.toLowerCase()) ||
+    po.supplier.toLowerCase().includes(search.toLowerCase())
+  );
 
   return (
     <div className="space-y-6">
 
-      {/* HEADER (SAMA SEPERTI REVIEW PR) */}
+      {/* HEADER */}
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-gray-800">
-          Purchase Order
-        </h1>
+        <h1 className="text-2xl font-bold text-gray-800">Purchase Order</h1>
+        <button
+          onClick={() => navigate(ROUTES.PURCHASE_ORDER_CREATE)}
+          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm shadow-sm transition"
+        >
+          + Buat PO
+        </button>
       </div>
 
-      {/* TABLE (SAMA STYLE NYA) */}
+      {/* SEARCH */}
+      <input
+        type="text"
+        placeholder="Cari PO, PR, supplier..."
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        className="w-full border border-gray-300 px-4 py-2 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+      />
+
+      {/* TABLE */}
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
         <table className="w-full text-sm">
-
           <thead className="bg-gray-50 text-gray-500 uppercase text-xs">
             <tr>
               <th className="px-6 py-3 text-left">No PO</th>
@@ -55,46 +79,41 @@ export default function PurchaseOrderIndex() {
               <th className="px-6 py-3 text-center">Aksi</th>
             </tr>
           </thead>
-
           <tbody className="divide-y divide-gray-100">
-            {dummyPO.map((po) => (
-              <tr key={po.id} className="hover:bg-gray-50 transition">
-
-                <td className="px-6 py-4 font-medium text-gray-800">
-                  {po.poNumber}
+            {filtered.length === 0 ? (
+              <tr>
+                <td colSpan={6} className="text-center py-10 text-gray-400">
+                  Tidak ada data
                 </td>
-
-                <td className="px-6 py-4 text-gray-600">
-                  {po.prNumber}
-                </td>
-
-                <td className="px-6 py-4 text-gray-600">
-                  {po.supplier}
-                </td>
-
-                <td className="px-6 py-4 text-gray-600">
-                  Rp {formatRupiah(po.total)}
-                </td>
-
-                <td className="px-6 py-4">
-                  <span className={`px-3 py-1 rounded-full text-xs font-semibold ${STATUS_STYLE[po.status]}`}>
-                    {po.status}
-                  </span>
-                </td>
-
-                <td className="px-6 py-4 text-center">
-                  <button
-                    onClick={() => navigate(`/procurement/purchaseorder/${po.id}`)}
-                    className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-1 rounded-md text-xs transition"
-                  >
-                    Detail
-                  </button>
-                </td>
-
               </tr>
-            ))}
+            ) : (
+              filtered.map((po) => (
+                <tr key={po.id} className="hover:bg-gray-50 transition">
+                  <td className="px-6 py-4 font-medium text-gray-800">
+                    {po.poNumber}
+                  </td>
+                  <td className="px-6 py-4 text-gray-600">{po.prNumber}</td>
+                  <td className="px-6 py-4 text-gray-600">{po.supplier}</td>
+                  <td className="px-6 py-4 text-gray-600">
+                    {formatRupiah(po.total)}
+                  </td>
+                  <td className="px-6 py-4">
+                    <span className={`px-3 py-1 rounded-full text-xs font-semibold ${STATUS_STYLE[po.status]}`}>
+                      {po.status}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 text-center">
+                    <button
+                      onClick={() => navigate(`/procurement/purchaseorder/${po.id}`)}
+                      className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-1 rounded-md text-xs transition"
+                    >
+                      {po.status === "DRAFT" ? "Edit" : "Detail"}
+                    </button>
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
-
         </table>
       </div>
 

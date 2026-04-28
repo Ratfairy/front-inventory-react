@@ -7,9 +7,11 @@ export const ROUTES = {
   PURCHASE_REQUEST_DETAIL: "/procurement/purchaserequest/:id",
   REVIEW_PR :              "/procurement/reviewpr",
   REVIEW_PR_DETAIL:        "/procurement/reviewpr/:id",
-  PURCHASE_ORDER:          "/procurement/purchaseorder",
-  PURCHASE_ORDER_DETAIL:   "/procurement/purchaseorder/:id",
-  RECEIVE_GOODS:           "/procurement/receivegoods",
+  PURCHASE_ORDER:        "/procurement/purchaseorder",
+  PURCHASE_ORDER_CREATE: "/procurement/purchaseorder/create",
+  PURCHASE_ORDER_DETAIL: "/procurement/purchaseorder/:id",
+  RECEIVE_GOODS:        "/procurement/receivegoods",
+  RECEIVE_GOODS_DETAIL: "/procurement/receivegoods/:id",
   INVOICE:                 "/procurement/invoice",
 
   // STOCK

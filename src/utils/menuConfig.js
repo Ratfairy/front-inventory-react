@@ -11,7 +11,7 @@ export const MENU = [
       { title: "Purchase Request", path: "/procurement/purchaserequest" },
       { title: "Review PR",        path: "/procurement/reviewpr" },
       { title: "Purchase Order",   path: "/procurement/purchaseorder" },
-      { title: "Receive Goods",    path: "/procurement/receive" },
+      { title: "Receive Goods",    path: "/procurement/receivegoods" },
       { title: "Invoice",          path: "/procurement/invoice" },
     ],
   },

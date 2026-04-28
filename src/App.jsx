@@ -8,9 +8,11 @@ import PurchaseRequestCreate from "./pages/procurement/purchaserequest/create";
 import PurchaseRequestDetail from "./pages/procurement/purchaserequest/detail";
 import ReviewPR              from "./pages/procurement/reviewPR/index";
 import ReviewPRDetail        from "./pages/procurement/reviewPR/detail";
-import PurchaseOrderIndex    from "./pages/procurement/purchaseorder";
-import PurchaseOrderDetail   from "./pages/procurement/purchaseorder/detail";
-import ReceiveGoods          from "./pages/procurement/receivegoods";
+import PurchaseOrderIndex  from "./pages/procurement/purchaseorder/index";
+import PurchaseOrderCreate from "./pages/procurement/purchaseorder/create";
+import PurchaseOrderDetail from "./pages/procurement/purchaseorder/detail";
+import ReceiveGoodsIndex  from "./pages/procurement/receivegoods/index";
+import ReceiveGoodsDetail from "./pages/procurement/receivegoods/detail";
 import Invoice               from "./pages/procurement/invoice";
 
 // STOCK
@@ -44,12 +46,14 @@ function App() {
           <Route path={ROUTES.PURCHASE_REQUEST}        element={<PurchaseRequest />} />
           <Route path={ROUTES.PURCHASE_REQUEST_CREATE} element={<PurchaseRequestCreate />} />
           <Route path={ROUTES.PURCHASE_REQUEST_DETAIL} element={<PurchaseRequestDetail />} />         
-          <Route path={ROUTES.REVIEW_PR}        element={<ReviewPR />} />
-          <Route path={ROUTES.REVIEW_PR_DETAIL} element={<ReviewPRDetail />} />
-          <Route path={ROUTES.PURCHASE_ORDER} element={<PurchaseOrderIndex />} />
-          <Route path={ROUTES.PURCHASE_ORDER_DETAIL} element={<PurchaseOrderDetail />} />
-          <Route path={ROUTES.RECEIVE_GOODS}   element={<ReceiveGoods />} />
-          <Route path={ROUTES.INVOICE}   element={<Invoice />} />
+          <Route path={ROUTES.REVIEW_PR}               element={<ReviewPR />} />
+          <Route path={ROUTES.REVIEW_PR_DETAIL}        element={<ReviewPRDetail />} />
+          <Route path={ROUTES.PURCHASE_ORDER}          element={<PurchaseOrderIndex />} />
+          <Route path={ROUTES.PURCHASE_ORDER_CREATE}   element={<PurchaseOrderCreate />} />
+          <Route path={ROUTES.PURCHASE_ORDER_DETAIL}   element={<PurchaseOrderDetail />} />
+          <Route path={ROUTES.RECEIVE_GOODS}           element={<ReceiveGoodsIndex />} />
+          <Route path={ROUTES.RECEIVE_GOODS_DETAIL}    element={<ReceiveGoodsDetail />} />
+          <Route path={ROUTES.INVOICE}                 element={<Invoice />} />
 
           {/* STOCK */}
           <Route path={ROUTES.STOCK_LIST}          element={<StockList />} />
