@@ -8,9 +8,9 @@ export const MENU = [
     title: "Procurement",
     icon: "🛒",
     children: [
-      { title: "Purchase Request", path: "/procurement/request" },
-      { title: "Review PR",        path: "/procurement/review" },
-      { title: "Purchase Order",   path: "/procurement/po" },
+      { title: "Purchase Request", path: "/procurement/purchaserequest" },
+      { title: "Review PR",        path: "/procurement/reviewpr" },
+      { title: "Purchase Order",   path: "/procurement/purchaseorder" },
       { title: "Receive Goods",    path: "/procurement/receive" },
       { title: "Invoice",          path: "/procurement/invoice" },
     ],

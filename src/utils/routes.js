@@ -1,12 +1,16 @@
 export const ROUTES = {
   DASHBOARD: "/",
 
-  // PROCUREMENT (gabungan Request + Purchase + Receipt)
-  PR_CREATE:  "/procurement/request",
-  PR_REVIEW:  "/procurement/review",
-  PO_CREATE:  "/procurement/po",
-  RECEIVE:    "/procurement/receive",
-  INVOICE:    "/procurement/invoice",
+  // PROCUREMENT
+  PURCHASE_REQUEST:        "/procurement/purchaserequest",
+  PURCHASE_REQUEST_CREATE: "/procurement/purchaserequest/create",
+  PURCHASE_REQUEST_DETAIL: "/procurement/purchaserequest/:id",
+  REVIEW_PR :              "/procurement/reviewpr",
+  REVIEW_PR_DETAIL:        "/procurement/reviewpr/:id",
+  PURCHASE_ORDER:          "/procurement/purchaseorder",
+  PURCHASE_ORDER_DETAIL:   "/procurement/purchaseorder/:id",
+  RECEIVE_GOODS:           "/procurement/receivegoods",
+  INVOICE:                 "/procurement/invoice",
 
   // STOCK
   STOCK_LIST:     "/stock/stockList",
