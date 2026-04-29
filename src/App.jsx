@@ -8,12 +8,14 @@ import PurchaseRequestCreate from "./pages/procurement/purchaserequest/create";
 import PurchaseRequestDetail from "./pages/procurement/purchaserequest/detail";
 import ReviewPR              from "./pages/procurement/reviewPR/index";
 import ReviewPRDetail        from "./pages/procurement/reviewPR/detail";
-import PurchaseOrderIndex  from "./pages/procurement/purchaseorder/index";
-import PurchaseOrderCreate from "./pages/procurement/purchaseorder/create";
-import PurchaseOrderDetail from "./pages/procurement/purchaseorder/detail";
-import ReceiveGoodsIndex  from "./pages/procurement/receivegoods/index";
-import ReceiveGoodsDetail from "./pages/procurement/receivegoods/detail";
-import Invoice               from "./pages/procurement/invoice";
+import PurchaseOrderIndex    from "./pages/procurement/purchaseorder/index";
+import PurchaseOrderCreate   from "./pages/procurement/purchaseorder/create";
+import PurchaseOrderDetail   from "./pages/procurement/purchaseorder/detail";
+import ReceiveGoodsIndex     from "./pages/procurement/receivegoods/index";
+import ReceiveGoodsDetail    from "./pages/procurement/receivegoods/detail";
+import InvoiceIndex          from "./pages/procurement/invoice/index";
+import InvoiceCreate         from "./pages/procurement/invoice/create";
+import InvoiceDetail         from "./pages/procurement/invoice/detail";
 
 // STOCK
 import StockList          from "./pages/stock/StockList";
@@ -53,7 +55,9 @@ function App() {
           <Route path={ROUTES.PURCHASE_ORDER_DETAIL}   element={<PurchaseOrderDetail />} />
           <Route path={ROUTES.RECEIVE_GOODS}           element={<ReceiveGoodsIndex />} />
           <Route path={ROUTES.RECEIVE_GOODS_DETAIL}    element={<ReceiveGoodsDetail />} />
-          <Route path={ROUTES.INVOICE}                 element={<Invoice />} />
+          <Route path={ROUTES.INVOICE}        element={<InvoiceIndex />} />
+          <Route path={ROUTES.INVOICE_CREATE} element={<InvoiceCreate />} />
+          <Route path={ROUTES.INVOICE_DETAIL} element={<InvoiceDetail />} />
 
           {/* STOCK */}
           <Route path={ROUTES.STOCK_LIST}          element={<StockList />} />
