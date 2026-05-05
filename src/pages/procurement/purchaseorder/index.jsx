@@ -1,25 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "../../../utils/routes";
-
-const dummyPO = [
-  {
-    id: 1,
-    poNumber: "PO-2026-001",
-    prNumber: "PR-2026-001",
-    supplier: "PT Sumber Jaya",
-    total: 550000,
-    status: "DRAFT",
-  },
-  {
-    id: 2,
-    poNumber: "PO-2026-002",
-    prNumber: "PR-2026-002",
-    supplier: "PT Maju Mundur",
-    total: 50000,
-    status: "SENT",
-  },
-];
+import { getAllPOs } from "../../../api/services/purchaseOrderService";
 
 const STATUS_STYLE = {
   DRAFT: "bg-gray-100 text-gray-600",
@@ -28,7 +10,25 @@ const STATUS_STYLE = {
 
 export default function PurchaseOrderIndex() {
   const navigate = useNavigate();
-  const [search, setSearch] = useState("");
+  const [data, setData]       = useState([]);
+  const [search, setSearch]   = useState("");
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchPOs();
+  }, []);
+
+  const fetchPOs = async () => {
+    try {
+      setLoading(true);
+      const res = await getAllPOs();
+      setData(res.data);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const formatRupiah = (val) =>
     new Intl.NumberFormat("id-ID", {
@@ -37,10 +37,16 @@ export default function PurchaseOrderIndex() {
       minimumFractionDigits: 0,
     }).format(val || 0);
 
-  const filtered = dummyPO.filter(po =>
+  const filtered = data.filter(po =>
     po.poNumber.toLowerCase().includes(search.toLowerCase()) ||
     po.prNumber.toLowerCase().includes(search.toLowerCase()) ||
     po.supplier.toLowerCase().includes(search.toLowerCase())
+  );
+
+  if (loading) return (
+    <div className="flex items-center justify-center h-64">
+      <p className="text-gray-400">Memuat data...</p>
+    </div>
   );
 
   return (
@@ -74,7 +80,7 @@ export default function PurchaseOrderIndex() {
               <th className="px-6 py-3 text-left">No PO</th>
               <th className="px-6 py-3 text-left">No PR</th>
               <th className="px-6 py-3 text-left">Supplier</th>
-              <th className="px-6 py-3 text-left">Total Harga</th>
+              <th className="px-6 py-3 text-left">Total</th>
               <th className="px-6 py-3 text-left">Status</th>
               <th className="px-6 py-3 text-center">Aksi</th>
             </tr>
@@ -89,14 +95,10 @@ export default function PurchaseOrderIndex() {
             ) : (
               filtered.map((po) => (
                 <tr key={po.id} className="hover:bg-gray-50 transition">
-                  <td className="px-6 py-4 font-medium text-gray-800">
-                    {po.poNumber}
-                  </td>
+                  <td className="px-6 py-4 font-medium text-gray-800">{po.poNumber}</td>
                   <td className="px-6 py-4 text-gray-600">{po.prNumber}</td>
                   <td className="px-6 py-4 text-gray-600">{po.supplier}</td>
-                  <td className="px-6 py-4 text-gray-600">
-                    {formatRupiah(po.total)}
-                  </td>
+                  <td className="px-6 py-4 text-gray-600">{formatRupiah(po.grandTotal)}</td>
                   <td className="px-6 py-4">
                     <span className={`px-3 py-1 rounded-full text-xs font-semibold ${STATUS_STYLE[po.status]}`}>
                       {po.status}

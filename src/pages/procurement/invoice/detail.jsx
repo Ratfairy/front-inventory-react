@@ -1,44 +1,10 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ROUTES } from "../../../utils/routes";
-
-const dummyInvoices = [
-  {
-    id: 1,
-    invoiceNumber: "INV-2026-001",
-    poNumber: "PO-2026-001",
-    prNumber: "PR-2026-001",
-    supplier: "PT Sumber Jaya",
-    dept: "IT",
-    pic: "Andi",
-    invoiceDate: "2026-04-25",
-    receivedDate: "2026-04-24",
-    invoiceRef: "INV/SUJ/2026/001",
-    notes: "Mohon segera diproses",
-    status: "DRAFT",
-    items: [
-      { name: "Kertas HVS", qtyReceived: 5, unit: "Pack", price: 50000 },
-      { name: "Tinta Printer", qtyReceived: 2, unit: "PCS", price: 150000 },
-    ],
-  },
-  {
-    id: 2,
-    invoiceNumber: "INV-2026-002",
-    poNumber: "PO-2026-002",
-    prNumber: "PR-2026-002",
-    supplier: "PT Maju Mundur",
-    dept: "Finance",
-    pic: "Budi",
-    invoiceDate: "2026-04-26",
-    receivedDate: "2026-04-25",
-    invoiceRef: "",
-    notes: "",
-    status: "SENT",
-    items: [
-      { name: "Pulpen", qtyReceived: 10, unit: "PCS", price: 5000 },
-    ],
-  },
-];
+import {
+  getInvoiceById,
+  updateInvoiceStatus
+} from "../../../api/services/invoiceService";
 
 const STATUS_STYLE = {
   DRAFT: "bg-gray-100 text-gray-600",
@@ -49,12 +15,24 @@ export default function InvoiceDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const found = dummyInvoices.find(inv => inv.id === Number(id));
-  const [data, setData] = useState(found);
+  const [data, setData]     = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  if (!data) return (
-    <div className="p-6 text-gray-400">Data tidak ditemukan</div>
-  );
+  useEffect(() => {
+    fetchInvoice();
+  }, [id]);
+
+  const fetchInvoice = async () => {
+    try {
+      setLoading(true);
+      const res = await getInvoiceById(id);
+      setData(res.data);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const formatRupiah = (val) =>
     new Intl.NumberFormat("id-ID", {
@@ -63,14 +41,23 @@ export default function InvoiceDetail() {
       minimumFractionDigits: 0,
     }).format(val || 0);
 
-  const grandTotal = data.items.reduce((sum, item) =>
-    sum + (item.qtyReceived * item.price || 0), 0
+  const handleSend = async () => {
+    try {
+      const res = await updateInvoiceStatus(id, { status: "SENT" });
+      setData(res.data);
+      alert("Invoice berhasil dikirim ke Finance!");
+    } catch (err) {
+      alert(err.response?.data?.message || "Gagal mengirim invoice");
+    }
+  };
+
+  if (loading) return (
+    <div className="flex items-center justify-center h-64">
+      <p className="text-gray-400">Memuat data...</p>
+    </div>
   );
 
-  const handleSend = () => {
-    setData({ ...data, status: "SENT" });
-    alert("Invoice berhasil dikirim ke Finance!");
-  };
+  if (!data) return null;
 
   const isDraft = data.status === "DRAFT";
 
@@ -87,12 +74,8 @@ export default function InvoiceDetail() {
         </button>
         <div className="flex justify-between items-start">
           <div>
-            <h1 className="text-2xl font-bold text-gray-800">
-              {data.invoiceNumber}
-            </h1>
-            <p className="text-sm text-gray-400 mt-1">
-              Dari PO: {data.poNumber}
-            </p>
+            <h1 className="text-2xl font-bold text-gray-800">{data.invoiceNumber}</h1>
+            <p className="text-sm text-gray-400 mt-1">Dari PO: {data.poNumber}</p>
           </div>
           <span className={`px-3 py-1 rounded-full text-xs font-semibold ${STATUS_STYLE[data.status]}`}>
             {data.status}
@@ -111,7 +94,7 @@ export default function InvoiceDetail() {
           </div>
           <div>
             <p className="text-xs text-gray-400">Departemen</p>
-            <p className="font-medium text-gray-800 mt-1">{data.dept}</p>
+            <p className="font-medium text-gray-800 mt-1">{data.department}</p>
           </div>
           <div>
             <p className="text-xs text-gray-400">PIC</p>
@@ -119,15 +102,19 @@ export default function InvoiceDetail() {
           </div>
           <div>
             <p className="text-xs text-gray-400">Tanggal Invoice</p>
-            <p className="font-medium text-gray-800 mt-1">{data.invoiceDate}</p>
+            <p className="font-medium text-gray-800 mt-1">
+              {new Date(data.invoiceDate).toLocaleDateString("id-ID")}
+            </p>
           </div>
           <div>
             <p className="text-xs text-gray-400">Tanggal Diterima</p>
-            <p className="font-medium text-gray-800 mt-1">{data.receivedDate}</p>
+            <p className="font-medium text-gray-800 mt-1">
+              {new Date(data.receivedDate).toLocaleDateString("id-ID")}
+            </p>
           </div>
           {data.invoiceRef && (
             <div>
-              <p className="text-xs text-gray-400">No Ref Invoice Supplier</p>
+              <p className="text-xs text-gray-400">No Ref Supplier</p>
               <p className="font-medium text-gray-800 mt-1">{data.invoiceRef}</p>
             </div>
           )}
@@ -142,7 +129,7 @@ export default function InvoiceDetail() {
             {data.items.map((item, i) => (
               <div key={i} className="border border-gray-200 rounded-xl p-4 space-y-2">
                 <div className="flex justify-between items-center">
-                  <p className="font-medium text-gray-800 text-sm">{item.name}</p>
+                  <p className="font-medium text-gray-800 text-sm">{item.itemName}</p>
                   <span className="text-sm text-gray-600 bg-gray-100 px-3 py-1 rounded-lg">
                     {item.qtyReceived} {item.unit}
                   </span>
@@ -150,7 +137,7 @@ export default function InvoiceDetail() {
                 <div className="flex justify-between text-xs text-gray-500">
                   <span>Harga Satuan: {formatRupiah(item.price)}</span>
                   <span className="font-semibold text-gray-700">
-                    Subtotal: {formatRupiah(item.qtyReceived * item.price)}
+                    Subtotal: {formatRupiah(item.subtotal)}
                   </span>
                 </div>
               </div>
@@ -162,7 +149,7 @@ export default function InvoiceDetail() {
             <div className="bg-blue-50 border border-blue-100 rounded-xl px-5 py-3">
               <span className="text-sm text-gray-500">Grand Total: </span>
               <span className="text-lg font-bold text-blue-600">
-                {formatRupiah(grandTotal)}
+                {formatRupiah(data.grandTotal)}
               </span>
             </div>
           </div>

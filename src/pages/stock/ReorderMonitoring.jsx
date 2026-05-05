@@ -1,79 +1,80 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { getAllStocks } from "../../api/services/stockService";
 
 export default function ReorderMonitoring() {
-  const [search, setSearch] = useState("");
+  const [data, setData]       = useState([]);
+  const [search, setSearch]   = useState("");
+  const [loading, setLoading] = useState(true);
 
-  // 🔥 DATA DUMMY (nanti ganti API)
-  const data = [
-    { id: 1, name: "Kertas HVS", stock: 3, min: 5, unit: "Pack" },
-    { id: 2, name: "Pulpen", stock: 12, min: 10, unit: "PCS" },
-    { id: 3, name: "Tinta Printer", stock: 2, min: 5, unit: "PCS" },
-    { id: 4, name: "Map Folder", stock: 6, min: 5, unit: "PCS" },
-  ];
+  useEffect(() => {
+    fetchStocks();
+  }, []);
 
-  // 🔥 STATUS LOGIC
-  const getStatus = (stock, min) => {
-    if (stock < min) return "URGENT";
-    if (stock <= min * 1.3) return "CUKUP";
+  const fetchStocks = async () => {
+    try {
+      setLoading(true);
+      const res = await getAllStocks();
+      // Filter hanya yang Low Stock
+      setData(res.data.filter(s => s.status === "Low Stock"));
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getStatus = (qty, minQty) => {
+    if (qty < minQty) return "URGENT";
+    if (qty <= minQty * 1.3) return "CUKUP";
     return "SAFE";
   };
 
   const getStatusStyle = (status) => {
     switch (status) {
-      case "URGENT":
-        return "bg-red-100 text-red-600";
-      case "CUKUP":
-        return "bg-yellow-100 text-yellow-600";
-      default:
-        return "";
+      case "URGENT": return "bg-red-100 text-red-600";
+      case "CUKUP":  return "bg-yellow-100 text-yellow-600";
+      default:       return "";
     }
   };
 
   const getStatusLabel = (status) => {
     switch (status) {
-      case "URGENT":
-        return "Reorder Now";
-      case "CUKUP":
-        return "Prepare to Reorder";
-      default:
-        return "";
+      case "URGENT": return "Reorder Now";
+      case "CUKUP":  return "Prepare to Reorder";
+      default:       return "";
     }
   };
 
-  // 🔥 FILTER (hanya tampilkan urgent + cukup)
-  const filtered = data.filter(
-    (item) =>
-      getStatus(item.stock, item.min) !== "SAFE" &&
-      item.name.toLowerCase().includes(search.toLowerCase())
+  const filtered = data.filter(d =>
+    d.itemName.toLowerCase().includes(search.toLowerCase())
   );
 
-  // 🔥 SUMMARY
-  const urgentCount = data.filter(
-    (i) => getStatus(i.stock, i.min) === "URGENT"
-  ).length;
+  const urgentCount = data.filter(i => getStatus(i.qty, i.minQty) === "URGENT").length;
+  const cukupCount  = data.filter(i => getStatus(i.qty, i.minQty) === "CUKUP").length;
 
-  const cukupCount = data.filter(
-    (i) => getStatus(i.stock, i.min) === "CUKUP"
-  ).length;
+  if (loading) return (
+    <div className="flex items-center justify-center h-64">
+      <p className="text-gray-400">Memuat data...</p>
+    </div>
+  );
 
   return (
     <div className="space-y-6">
-      
+
       {/* TITLE */}
       <h1 className="text-2xl font-bold">Reorder Monitoring</h1>
 
-      {/* 🔥 SUMMARY */}
+      {/* SUMMARY */}
       <div className="flex gap-4">
         <div className="bg-red-100 text-red-600 px-4 py-2 rounded-xl text-sm font-semibold">
           🔴 {urgentCount} Urgent
         </div>
-
         <div className="bg-yellow-100 text-yellow-600 px-4 py-2 rounded-xl text-sm font-semibold">
           🟡 {cukupCount} Cukup
         </div>
       </div>
 
-      {/* 🔍 SEARCH */}
+      {/* SEARCH */}
       <div className="bg-white p-4 rounded-xl shadow-sm border">
         <input
           type="text"
@@ -84,20 +85,14 @@ export default function ReorderMonitoring() {
         />
       </div>
 
-      {/* 📊 TABLE */}
+      {/* TABLE */}
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100">
-        
-        {/* HEADER */}
         <div className="p-5 border-b">
-          <h2 className="font-semibold text-gray-700">
-            Items Need Reorder
-          </h2>
+          <h2 className="font-semibold text-gray-700">Items Need Reorder</h2>
         </div>
 
-        {/* TABLE */}
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
-            
             <thead className="bg-gray-50">
               <tr className="text-xs uppercase text-gray-500 tracking-wider">
                 <th className="px-6 py-3 text-left">No</th>
@@ -112,45 +107,22 @@ export default function ReorderMonitoring() {
             <tbody className="divide-y">
               {filtered.length === 0 ? (
                 <tr>
-                  <td colSpan="6" className="text-center py-6 text-gray-400">
+                  <td colSpan={6} className="text-center py-6 text-gray-400">
                     No items need reorder
                   </td>
                 </tr>
               ) : (
                 filtered.map((item, index) => {
-                  const status = getStatus(item.stock, item.min);
-
+                  const status = getStatus(item.qty, item.minQty);
                   return (
-                    <tr
-                      key={item.id}
-                      className="hover:bg-gray-50 transition duration-150"
-                    >
-                      <td className="px-6 py-4 text-gray-400">
-                        {index + 1}
-                      </td>
-
-                      <td className="px-6 py-4 font-medium text-gray-800">
-                        {item.name}
-                      </td>
-
-                      <td className="px-6 py-4 font-semibold text-gray-700">
-                        {item.stock}
-                      </td>
-
-                      <td className="px-6 py-4 text-gray-500">
-                        {item.min}
-                      </td>
-
-                      <td className="px-6 py-4 text-gray-500">
-                        {item.unit}
-                      </td>
-
+                    <tr key={item.id} className="hover:bg-gray-50 transition">
+                      <td className="px-6 py-4 text-gray-400">{index + 1}</td>
+                      <td className="px-6 py-4 font-medium text-gray-800">{item.itemName}</td>
+                      <td className="px-6 py-4 font-semibold text-gray-700">{item.qty}</td>
+                      <td className="px-6 py-4 text-gray-500">{item.minQty}</td>
+                      <td className="px-6 py-4 text-gray-500">{item.unit}</td>
                       <td className="px-6 py-4">
-                        <span
-                          className={`px-3 py-1 text-xs rounded-full font-semibold ${getStatusStyle(
-                            status
-                          )}`}
-                        >
+                        <span className={`px-3 py-1 text-xs rounded-full font-semibold ${getStatusStyle(status)}`}>
                           {getStatusLabel(status)}
                         </span>
                       </td>
@@ -159,10 +131,8 @@ export default function ReorderMonitoring() {
                 })
               )}
             </tbody>
-
           </table>
         </div>
-
       </div>
 
     </div>

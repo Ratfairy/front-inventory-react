@@ -1,36 +1,11 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ROUTES } from "../../../utils/routes";
-
-const dummyPO = [
-  {
-    id: 1,
-    poNumber: "PO-2026-001",
-    prNumber: "PR-2026-001",
-    supplier: "PT Sumber Jaya",
-    dept: "IT",
-    pic: "Andi",
-    neededDate: "2026-04-30",
-    status: "DRAFT",
-    items: [
-      { name: "Kertas HVS", qty: 5, unit: "Pack", price: 50000, reason: "Stok habis" },
-      { name: "Tinta Printer", qty: 2, unit: "PCS", price: 150000, reason: "Printer macet" },
-    ],
-  },
-  {
-    id: 2,
-    poNumber: "PO-2026-002",
-    prNumber: "PR-2026-002",
-    supplier: "PT Maju Mundur",
-    dept: "Finance",
-    pic: "Budi",
-    neededDate: "2026-05-01",
-    status: "SENT",
-    items: [
-      { name: "Pulpen", qty: 10, unit: "PCS", price: 5000, reason: "Stok habis" },
-    ],
-  },
-];
+import {
+  getPOById,
+  updatePOStatus,
+  updatePO
+} from "../../../api/services/purchaseOrderService";
 
 const STATUS_STYLE = {
   DRAFT: "bg-gray-100 text-gray-600",
@@ -41,14 +16,28 @@ export default function PurchaseOrderDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const found = dummyPO.find(po => po.id === Number(id));
-  const [data, setData]         = useState(found);
-  const [supplier, setSupplier] = useState(found?.supplier || "");
-  const [items, setItems]       = useState(found?.items || []);
+  const [data, setData]         = useState(null);
+  const [supplier, setSupplier] = useState("");
+  const [items, setItems]       = useState([]);
+  const [loading, setLoading]   = useState(true);
 
-  if (!data) return (
-    <div className="p-6 text-gray-400">Data tidak ditemukan</div>
-  );
+  useEffect(() => {
+    fetchPO();
+  }, [id]);
+
+  const fetchPO = async () => {
+    try {
+      setLoading(true);
+      const res = await getPOById(id);
+      setData(res.data);
+      setSupplier(res.data.supplier);
+      setItems(res.data.items);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const formatRupiah = (val) =>
     new Intl.NumberFormat("id-ID", {
@@ -67,14 +56,39 @@ export default function PurchaseOrderDetail() {
     ));
   };
 
-  const handleSend = () => {
+  const handleSend = async () => {
     if (!supplier.trim()) {
       alert("Supplier wajib diisi!");
       return;
     }
-    setData({ ...data, status: "SENT", supplier });
-    alert("PO berhasil dikirim ke supplier!");
+    try {
+      // Update PO dulu
+      await updatePO(id, {
+        supplier,
+        items: items.map(i => ({
+          itemName: i.itemName,
+          qty:      i.qty,
+          unit:     i.unit,
+          price:    i.price,
+          reason:   i.reason,
+        })),
+      });
+      // Lalu update status ke SENT
+      const res = await updatePOStatus(id, { status: "SENT" });
+      setData(res.data);
+      alert("PO berhasil dikirim ke supplier!");
+    } catch (err) {
+      alert(err.response?.data?.message || "Gagal mengirim PO");
+    }
   };
+
+  if (loading) return (
+    <div className="flex items-center justify-center h-64">
+      <p className="text-gray-400">Memuat data...</p>
+    </div>
+  );
+
+  if (!data) return null;
 
   const isDraft = data.status === "DRAFT";
 
@@ -107,7 +121,7 @@ export default function PurchaseOrderDetail() {
         <div className="grid grid-cols-2 gap-4">
           <div>
             <p className="text-xs text-gray-400">Departemen</p>
-            <p className="font-medium text-gray-800 mt-1">{data.dept}</p>
+            <p className="font-medium text-gray-800 mt-1">{data.department}</p>
           </div>
           <div>
             <p className="text-xs text-gray-400">PIC</p>
@@ -115,7 +129,9 @@ export default function PurchaseOrderDetail() {
           </div>
           <div>
             <p className="text-xs text-gray-400">Tanggal Dibutuhkan</p>
-            <p className="font-medium text-gray-800 mt-1">{data.neededDate}</p>
+            <p className="font-medium text-gray-800 mt-1">
+              {new Date(data.neededDate).toLocaleDateString("id-ID")}
+            </p>
           </div>
         </div>
 
@@ -144,27 +160,19 @@ export default function PurchaseOrderDetail() {
           <div className="space-y-3">
             {items.map((item, i) => (
               <div key={i} className="border border-gray-200 rounded-xl p-4 space-y-2">
-
-                {/* NAMA + QTY */}
                 <div className="flex justify-between items-center">
-                  <p className="font-medium text-gray-800 text-sm">{item.name}</p>
+                  <p className="font-medium text-gray-800 text-sm">{item.itemName}</p>
                   <span className="text-sm text-gray-600 bg-gray-100 px-3 py-1 rounded-lg">
                     {item.qty} {item.unit}
                   </span>
                 </div>
-
-                {/* NOTE */}
                 {item.reason && (
                   <p className="text-xs text-gray-500 bg-gray-50 px-3 py-2 rounded-lg">
                     📝 {item.reason}
                   </p>
                 )}
-
-                {/* HARGA */}
                 <div className="flex items-center gap-3">
-                  <label className="text-xs text-gray-400 whitespace-nowrap">
-                    Harga Satuan
-                  </label>
+                  <label className="text-xs text-gray-400 whitespace-nowrap">Harga Satuan</label>
                   {isDraft ? (
                     <input
                       type="number"
@@ -176,17 +184,13 @@ export default function PurchaseOrderDetail() {
                     <p className="text-sm text-gray-700">{formatRupiah(item.price)}</p>
                   )}
                 </div>
-
-                {/* SUBTOTAL */}
                 <div className="flex justify-end">
                   <p className="text-xs text-gray-500">
-                    Subtotal:{" "}
-                    <span className="font-semibold text-gray-700">
+                    Subtotal: <span className="font-semibold text-gray-700">
                       {formatRupiah(item.qty * item.price)}
                     </span>
                   </p>
                 </div>
-
               </div>
             ))}
           </div>

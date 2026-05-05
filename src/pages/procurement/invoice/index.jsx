@@ -1,29 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "../../../utils/routes";
-
-const dummyInvoices = [
-  {
-    id: 1,
-    invoiceNumber: "INV-2026-001",
-    poNumber: "PO-2026-001",
-    supplier: "PT Sumber Jaya",
-    dept: "IT",
-    total: 550000,
-    status: "DRAFT",
-    date: "2026-04-25",
-  },
-  {
-    id: 2,
-    invoiceNumber: "INV-2026-002",
-    poNumber: "PO-2026-002",
-    supplier: "PT Maju Mundur",
-    dept: "Finance",
-    total: 50000,
-    status: "SENT",
-    date: "2026-04-26",
-  },
-];
+import { getAllInvoices } from "../../../api/services/invoiceService";
 
 const STATUS_STYLE = {
   DRAFT: "bg-gray-100 text-gray-600",
@@ -32,8 +10,26 @@ const STATUS_STYLE = {
 
 export default function InvoiceIndex() {
   const navigate = useNavigate();
-  const [search, setSearch]           = useState("");
+  const [data, setData]                 = useState([]);
+  const [search, setSearch]             = useState("");
   const [filterStatus, setFilterStatus] = useState("ALL");
+  const [loading, setLoading]           = useState(true);
+
+  useEffect(() => {
+    fetchInvoices();
+  }, []);
+
+  const fetchInvoices = async () => {
+    try {
+      setLoading(true);
+      const res = await getAllInvoices();
+      setData(res.data);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const formatRupiah = (val) =>
     new Intl.NumberFormat("id-ID", {
@@ -42,7 +38,7 @@ export default function InvoiceIndex() {
       minimumFractionDigits: 0,
     }).format(val || 0);
 
-  const filtered = dummyInvoices.filter(inv => {
+  const filtered = data.filter(inv => {
     const matchStatus = filterStatus === "ALL" || inv.status === filterStatus;
     const matchSearch =
       inv.invoiceNumber.toLowerCase().includes(search.toLowerCase()) ||
@@ -50,6 +46,12 @@ export default function InvoiceIndex() {
       inv.supplier.toLowerCase().includes(search.toLowerCase());
     return matchStatus && matchSearch;
   });
+
+  if (loading) return (
+    <div className="flex items-center justify-center h-64">
+      <p className="text-gray-400">Memuat data...</p>
+    </div>
+  );
 
   return (
     <div className="space-y-6">
@@ -110,16 +112,14 @@ export default function InvoiceIndex() {
             ) : (
               filtered.map((inv) => (
                 <tr key={inv.id} className="hover:bg-gray-50 transition">
-                  <td className="px-6 py-4 font-medium text-gray-800">
-                    {inv.invoiceNumber}
-                  </td>
+                  <td className="px-6 py-4 font-medium text-gray-800">{inv.invoiceNumber}</td>
                   <td className="px-6 py-4 text-gray-600">{inv.poNumber}</td>
                   <td className="px-6 py-4 text-gray-600">{inv.supplier}</td>
-                  <td className="px-6 py-4 text-gray-600">{inv.dept}</td>
+                  <td className="px-6 py-4 text-gray-600">{inv.department}</td>
+                  <td className="px-6 py-4 text-gray-600">{formatRupiah(inv.grandTotal)}</td>
                   <td className="px-6 py-4 text-gray-600">
-                    {formatRupiah(inv.total)}
+                    {new Date(inv.invoiceDate).toLocaleDateString("id-ID")}
                   </td>
-                  <td className="px-6 py-4 text-gray-600">{inv.date}</td>
                   <td className="px-6 py-4">
                     <span className={`px-3 py-1 rounded-full text-xs font-semibold ${STATUS_STYLE[inv.status]}`}>
                       {inv.status}

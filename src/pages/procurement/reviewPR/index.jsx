@@ -1,97 +1,68 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "../../../utils/routes";
-
-const dummyData = [
-  {
-    id: 1,
-    prNumber: "PR-2026-001",
-    dept: "IT",
-    pic: "Andi",
-    date: "2026-04-20",
-    neededDate: "2026-04-30",
-    status: "WAITING APPROVAL",
-    items: [
-      { name: "Kertas HVS", qty: 5, unit: "Pack", price: 50000, reason: "Stok habis di ruangan" },
-      { name: "Tinta Printer", qty: 2, unit: "PCS", price: 150000, reason: "Printer sering macet" },
-    ],
-  },
-  {
-    id: 2,
-    prNumber: "PR-2026-002",
-    dept: "Finance",
-    pic: "Budi",
-    date: "2026-04-21",
-    neededDate: "2026-05-01",
-    status: "WAITING APPROVAL",
-    items: [
-      { name: "Pulpen", qty: 10, unit: "PCS", price: 5000, reason: "Stok pulpen habis" },
-    ],
-  },
-  {
-    id: 3,
-    prNumber: "PR-2026-003",
-    dept: "HR",
-    pic: "Siti",
-    date: "2026-04-22",
-    neededDate: "2026-05-05",
-    status: "APPROVED",
-    comment: "Disetujui, segera proses PO",
-    items: [
-      { name: "Map Folder", qty: 20, unit: "PCS", price: 3000, reason: "Persiapan event tahunan" },
-    ],
-  },
-  {
-    id: 4,
-    prNumber: "PR-2026-004",
-    dept: "Marketing",
-    pic: "Rudi",
-    date: "2026-04-23",
-    neededDate: "2026-05-10",
-    status: "REJECTED",
-    comment: "Budget tidak mencukupi",
-    items: [
-      { name: "Laptop", qty: 2, unit: "Unit", price: 8000000, reason: "Laptop lama rusak" },
-    ],
-  },
-];
+import { getAllPRs } from "../../../api/services/purchaseRequestService";
 
 const STATUS_STYLE = {
-  "WAITING APPROVAL": "bg-yellow-100 text-yellow-600",
+  "WAITING_APPROVAL": "bg-yellow-100 text-yellow-600",
   "APPROVED":         "bg-green-100 text-green-600",
   "REJECTED":         "bg-red-100 text-red-600",
 };
 
 export default function ReviewPRIndex() {
   const navigate = useNavigate();
+  const [data, setData]           = useState([]);
   const [activeTab, setActiveTab] = useState("waiting");
   const [search, setSearch]       = useState("");
+  const [loading, setLoading]     = useState(true);
 
-  // ✅ FORMAT RUPIAH
-  const formatRupiah = (val) => Number(val || 0).toLocaleString("id-ID");
+  useEffect(() => {
+    fetchPRs();
+  }, []);
 
-  // ✅ TOTAL PER PR
-  const getTotalPR = (items) => {
-    return items.reduce((sum, item) => {
-      return sum + (item.qty * (item.price || 0));
-    }, 0);
+  const fetchPRs = async () => {
+    try {
+      setLoading(true);
+      const res = await getAllPRs();
+      // Filter hanya yang WAITING_APPROVAL, APPROVED, REJECTED
+      setData(res.data.filter(pr =>
+        ["WAITING_APPROVAL", "APPROVED", "REJECTED"].includes(pr.status)
+      ));
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const waiting = dummyData.filter(d =>
-    d.status === "WAITING APPROVAL" &&
+  const formatRupiah = (val) =>
+    new Intl.NumberFormat("id-ID", {
+      style: "currency",
+      currency: "IDR",
+      minimumFractionDigits: 0,
+    }).format(val || 0);
+
+  const waiting = data.filter(d =>
+    d.status === "WAITING_APPROVAL" &&
     (d.prNumber.toLowerCase().includes(search.toLowerCase()) ||
-     d.dept.toLowerCase().includes(search.toLowerCase()) ||
+     d.department.toLowerCase().includes(search.toLowerCase()) ||
      d.pic.toLowerCase().includes(search.toLowerCase()))
   );
 
-  const processed = dummyData.filter(d =>
-    d.status !== "WAITING APPROVAL" &&
+  const processed = data.filter(d =>
+    d.status !== "WAITING_APPROVAL" &&
     (d.prNumber.toLowerCase().includes(search.toLowerCase()) ||
-     d.dept.toLowerCase().includes(search.toLowerCase()) ||
+     d.department.toLowerCase().includes(search.toLowerCase()) ||
      d.pic.toLowerCase().includes(search.toLowerCase()))
   );
 
   const activeData = activeTab === "waiting" ? waiting : processed;
+
+  if (loading) return (
+    <div className="flex items-center justify-center h-64">
+      <p className="text-gray-400">Memuat data...</p>
+    </div>
+  );
 
   return (
     <div className="space-y-6">
@@ -99,11 +70,9 @@ export default function ReviewPRIndex() {
       {/* HEADER */}
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold text-gray-800">Review Purchase Request</h1>
-        <div className="flex gap-2">
-          <span className="bg-yellow-100 text-yellow-600 text-xs font-semibold px-3 py-1 rounded-full">
-            {waiting.length} Waiting
-          </span>
-        </div>
+        <span className="bg-yellow-100 text-yellow-600 text-xs font-semibold px-3 py-1 rounded-full">
+          {waiting.length} Waiting
+        </span>
       </div>
 
       {/* TABS */}
@@ -153,12 +122,11 @@ export default function ReviewPRIndex() {
               <th className="px-6 py-3 text-left">Departemen</th>
               <th className="px-6 py-3 text-left">PIC</th>
               <th className="px-6 py-3 text-left">Tgl Dibutuhkan</th>
-              <th className="px-6 py-3 text-left">Total Harga</th> {/* ✅ TAMBAHAN */}
+              <th className="px-6 py-3 text-left">Total</th>
               <th className="px-6 py-3 text-left">Status</th>
               <th className="px-6 py-3 text-center">Aksi</th>
             </tr>
           </thead>
-
           <tbody className="divide-y divide-gray-100">
             {activeData.length === 0 ? (
               <tr>
@@ -169,24 +137,20 @@ export default function ReviewPRIndex() {
             ) : (
               activeData.map((pr) => (
                 <tr key={pr.id} className="hover:bg-gray-50 transition">
-                  <td className="px-6 py-4 font-medium text-gray-800">
-                    {pr.prNumber}
-                  </td>
-                  <td className="px-6 py-4 text-gray-600">{pr.dept}</td>
+                  <td className="px-6 py-4 font-medium text-gray-800">{pr.prNumber}</td>
+                  <td className="px-6 py-4 text-gray-600">{pr.department}</td>
                   <td className="px-6 py-4 text-gray-600">{pr.pic}</td>
-                  <td className="px-6 py-4 text-gray-600">{pr.neededDate}</td>
-
-                  {/* ✅ TOTAL HARGA */}
                   <td className="px-6 py-4 text-gray-600">
-                    Rp {formatRupiah(getTotalPR(pr.items))}
+                    {new Date(pr.neededDate).toLocaleDateString("id-ID")}
                   </td>
-
+                  <td className="px-6 py-4 text-gray-600">
+                    {formatRupiah(pr.grandTotal)}
+                  </td>
                   <td className="px-6 py-4">
                     <span className={`px-3 py-1 rounded-full text-xs font-semibold ${STATUS_STYLE[pr.status]}`}>
                       {pr.status}
                     </span>
                   </td>
-
                   <td className="px-6 py-4 text-center">
                     <button
                       onClick={() => navigate(`/procurement/reviewpr/${pr.id}`)}
@@ -199,7 +163,6 @@ export default function ReviewPRIndex() {
               ))
             )}
           </tbody>
-
         </table>
       </div>
 

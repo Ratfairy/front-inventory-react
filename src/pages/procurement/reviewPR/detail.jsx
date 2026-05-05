@@ -1,65 +1,13 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ROUTES } from "../../../utils/routes";
-
-const dummyData = [
-  {
-    id: 1,
-    prNumber: "PR-2026-001",
-    dept: "IT",
-    pic: "Andi",
-    date: "2026-04-20",
-    neededDate: "2026-04-30",
-    status: "WAITING APPROVAL",
-    comment: "",
-    items: [
-      { name: "Kertas HVS", qty: 5, unit: "Pack", price: 50000, reason: "Stok habis di ruangan" },
-      { name: "Tinta Printer", qty: 2, unit: "PCS", price: 150000, reason: "Printer sering macet" },
-    ],
-  },
-  {
-    id: 2,
-    prNumber: "PR-2026-002",
-    dept: "Finance",
-    pic: "Budi",
-    date: "2026-04-21",
-    neededDate: "2026-05-01",
-    status: "WAITING APPROVAL",
-    comment: "",
-    items: [
-      { name: "Pulpen", qty: 10, unit: "PCS", price: 5000, reason: "Stok pulpen habis" },
-    ],
-  },
-  {
-    id: 3,
-    prNumber: "PR-2026-003",
-    dept: "HR",
-    pic: "Siti",
-    date: "2026-04-22",
-    neededDate: "2026-05-05",
-    status: "APPROVED",
-    comment: "Disetujui, segera proses PO",
-    items: [
-      { name: "Map Folder", qty: 20, unit: "PCS", price: 3000, reason: "Persiapan event tahunan" },
-    ],
-  },
-  {
-    id: 4,
-    prNumber: "PR-2026-004",
-    dept: "Marketing",
-    pic: "Rudi",
-    date: "2026-04-23",
-    neededDate: "2026-05-10",
-    status: "REJECTED",
-    comment: "Budget tidak mencukupi",
-    items: [
-      { name: "Laptop", qty: 2, unit: "Unit", price: 8000000, reason: "Laptop lama rusak" },
-    ],
-  },
-];
+import {
+  getPRById,
+  updatePRStatus
+} from "../../../api/services/purchaseRequestService";
 
 const STATUS_STYLE = {
-  "WAITING APPROVAL": "bg-yellow-100 text-yellow-600",
+  "WAITING_APPROVAL": "bg-yellow-100 text-yellow-600",
   "APPROVED":         "bg-green-100 text-green-600",
   "REJECTED":         "bg-red-100 text-red-600",
 };
@@ -68,41 +16,75 @@ export default function ReviewPRDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const found = dummyData.find(d => d.id === Number(id));
-  const [data, setData]       = useState(found);
-  const [comment, setComment] = useState(found?.comment || "");
+  const [data, setData]       = useState(null);
+  const [comment, setComment] = useState("");
+  const [loading, setLoading] = useState(true);
 
-  if (!data) return (
-    <div className="p-6 text-gray-400">Data tidak ditemukan</div>
-  );
+  useEffect(() => {
+    fetchPR();
+  }, [id]);
 
-  // FORMAT RUPIAH
-  const formatRupiah = (val) => Number(val || 0).toLocaleString("id-ID");
-
-  // GRAND TOTAL
-  const getGrandTotal = () => {
-    return data.items.reduce((sum, item) => {
-      return sum + (item.qty * (item.price || 0));
-    }, 0);
+  const fetchPR = async () => {
+    try {
+      setLoading(true);
+      const res = await getPRById(id);
+      setData(res.data);
+      setComment(res.data.comment || "");
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleApprove = () => {
+  const formatRupiah = (val) =>
+    new Intl.NumberFormat("id-ID", {
+      style: "currency",
+      currency: "IDR",
+      minimumFractionDigits: 0,
+    }).format(val || 0);
+
+  const handleApprove = async () => {
     if (!comment.trim()) {
       alert("Tambahkan komentar terlebih dahulu!");
       return;
     }
-    setData({ ...data, status: "APPROVED", comment });
+    try {
+      const res = await updatePRStatus(id, {
+        status: "APPROVED",
+        comment,
+      });
+      setData(res.data);
+    } catch (err) {
+      alert(err.response?.data?.message || "Gagal approve PR");
+    }
   };
 
-  const handleReject = () => {
+  const handleReject = async () => {
     if (!comment.trim()) {
       alert("Tambahkan alasan penolakan!");
       return;
     }
-    setData({ ...data, status: "REJECTED", comment });
+    try {
+      const res = await updatePRStatus(id, {
+        status: "REJECTED",
+        comment,
+      });
+      setData(res.data);
+    } catch (err) {
+      alert(err.response?.data?.message || "Gagal reject PR");
+    }
   };
 
-  const isWaiting = data.status === "WAITING APPROVAL";
+  if (loading) return (
+    <div className="flex items-center justify-center h-64">
+      <p className="text-gray-400">Memuat data...</p>
+    </div>
+  );
+
+  if (!data) return null;
+
+  const isWaiting = data.status === "WAITING_APPROVAL";
 
   return (
     <div className="max-w-2xl mx-auto space-y-6">
@@ -118,7 +100,9 @@ export default function ReviewPRDetail() {
         <div className="flex justify-between items-start">
           <div>
             <h1 className="text-2xl font-bold text-gray-800">{data.prNumber}</h1>
-            <p className="text-sm text-gray-400 mt-1">Dibuat: {data.date}</p>
+            <p className="text-sm text-gray-400 mt-1">
+              Dibuat: {new Date(data.date).toLocaleDateString("id-ID")}
+            </p>
           </div>
           <span className={`px-3 py-1 rounded-full text-xs font-semibold ${STATUS_STYLE[data.status]}`}>
             {data.status}
@@ -133,7 +117,7 @@ export default function ReviewPRDetail() {
         <div className="grid grid-cols-2 gap-4">
           <div>
             <p className="text-xs text-gray-400">Departemen</p>
-            <p className="font-medium text-gray-800 mt-1">{data.dept}</p>
+            <p className="font-medium text-gray-800 mt-1">{data.department}</p>
           </div>
           <div>
             <p className="text-xs text-gray-400">PIC</p>
@@ -141,7 +125,9 @@ export default function ReviewPRDetail() {
           </div>
           <div>
             <p className="text-xs text-gray-400">Tanggal Dibutuhkan</p>
-            <p className="font-medium text-gray-800 mt-1">{data.neededDate}</p>
+            <p className="font-medium text-gray-800 mt-1">
+              {new Date(data.neededDate).toLocaleDateString("id-ID")}
+            </p>
           </div>
         </div>
 
@@ -153,38 +139,40 @@ export default function ReviewPRDetail() {
           <div className="space-y-3">
             {data.items.map((item, i) => (
               <div key={i} className="border border-gray-200 rounded-xl p-4 space-y-2">
-                
                 <div className="flex gap-3 items-center">
-                  <p className="flex-1 font-medium text-gray-800 text-sm">{item.name}</p>
+                  <p className="flex-1 font-medium text-gray-800 text-sm">{item.itemName}</p>
                   <span className="text-sm text-gray-600 bg-gray-100 px-3 py-1 rounded-lg">
                     {item.qty} {item.unit}
                   </span>
+                  <span className="text-sm text-gray-600 bg-gray-100 px-3 py-1 rounded-lg">
+                    {formatRupiah(item.price)}
+                  </span>
                 </div>
-
-                {/* HARGA */}
-                <div className="text-xs text-gray-600">
-                  Harga: Rp {formatRupiah(item.price)}
-                </div>
-
                 {item.reason && (
                   <p className="text-xs text-gray-500 bg-gray-50 px-3 py-2 rounded-lg">
                     📝 {item.reason}
                   </p>
                 )}
-
+                <div className="flex justify-end">
+                  <p className="text-xs text-gray-500">
+                    Subtotal: <span className="font-semibold text-gray-700">
+                      {formatRupiah(item.subtotal)}
+                    </span>
+                  </p>
+                </div>
               </div>
             ))}
           </div>
-        </div>
 
-        {/* ✅ TOTAL KESELURUHAN (SEPERTI GAMBAR) */}
-        <div className="bg-blue-50 border border-blue-100 rounded-xl px-5 py-4 flex justify-between items-center">
-          <span className="text-blue-700 font-medium">
-            Total Keseluruhan
-          </span>
-          <span className="text-blue-600 font-bold text-lg">
-            Rp {formatRupiah(getGrandTotal())}
-          </span>
+          {/* GRAND TOTAL */}
+          <div className="flex justify-end mt-3">
+            <div className="bg-blue-50 border border-blue-100 rounded-xl px-5 py-3">
+              <span className="text-sm text-gray-500">Grand Total: </span>
+              <span className="text-lg font-bold text-blue-600">
+                {formatRupiah(data.grandTotal)}
+              </span>
+            </div>
+          </div>
         </div>
 
         <hr className="border-gray-100" />
@@ -200,7 +188,7 @@ export default function ReviewPRDetail() {
               onChange={(e) => setComment(e.target.value)}
               rows={3}
               placeholder="Tambahkan komentar atau catatan untuk PR ini..."
-              className="w-full border border-gray-300 px-3 py-2 rounded-lg text-sm"
+              className="w-full border border-gray-300 px-3 py-2 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 resize-none"
             />
           ) : (
             <div className={`px-3 py-2 rounded-lg text-sm ${

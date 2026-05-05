@@ -1,46 +1,10 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ROUTES } from "../../../utils/routes";
-
-const dummyReceive = [
-  {
-    id: 1,
-    poNumber: "PO-2026-001",
-    prNumber: "PR-2026-001",
-    supplier: "PT Sumber Jaya",
-    dept: "IT",
-    pic: "Andi",
-    status: "PENDING",
-    items: [
-      { name: "Kertas HVS", qtyOrdered: 5, qtyReceived: 0, unit: "Pack", note: "" },
-      { name: "Tinta Printer", qtyOrdered: 2, qtyReceived: 0, unit: "PCS", note: "" },
-    ],
-  },
-  {
-    id: 2,
-    poNumber: "PO-2026-002",
-    prNumber: "PR-2026-002",
-    supplier: "PT Maju Mundur",
-    dept: "Finance",
-    pic: "Budi",
-    status: "PARTIAL",
-    items: [
-      { name: "Pulpen", qtyOrdered: 10, qtyReceived: 5, unit: "PCS", note: "Sisa 5 menyusul" },
-    ],
-  },
-  {
-    id: 3,
-    poNumber: "PO-2026-003",
-    prNumber: "PR-2026-003",
-    supplier: "PT Abadi Jaya",
-    dept: "HR",
-    pic: "Siti",
-    status: "RECEIVED",
-    items: [
-      { name: "Map Folder", qtyOrdered: 20, qtyReceived: 20, unit: "PCS", note: "" },
-    ],
-  },
-];
+import {
+  getReceiveGoodsById,
+  confirmReceive
+} from "../../../api/services/receiveGoodsService";
 
 const STATUS_STYLE = {
   PENDING:  "bg-yellow-100 text-yellow-600",
@@ -52,17 +16,26 @@ export default function ReceiveGoodsDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const found = dummyReceive.find(r => r.id === Number(id));
-  const [data, setData] = useState(found);
-  const [items, setItems] = useState(
-    found?.items.map(i => ({ ...i, qtyNew: "" })) || []
-  );
+  const [data, setData]     = useState(null);
+  const [items, setItems]   = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  if (!data) return (
-    <div className="p-6 text-gray-400">Data tidak ditemukan</div>
-  );
+  useEffect(() => {
+    fetchReceiveGoods();
+  }, [id]);
 
-  const isReadOnly = data.status === "RECEIVED";
+  const fetchReceiveGoods = async () => {
+    try {
+      setLoading(true);
+      const res = await getReceiveGoodsById(id);
+      setData(res.data);
+      setItems(res.data.items.map(i => ({ ...i, qtyNew: "" })));
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleQtyChange = (index, value) => {
     setItems(items.map((item, i) =>
@@ -76,47 +49,48 @@ export default function ReceiveGoodsDetail() {
     ));
   };
 
-  const handleConfirm = () => {
-    // validasi qty
+  const handleConfirm = async () => {
+    // Validasi
     for (let i = 0; i < items.length; i++) {
       const item = items[i];
       const qtyNew = Number(item.qtyNew) || 0;
-      const totalReceived = item.qtyReceived + qtyNew;
       if (qtyNew < 0) {
-        alert(`Qty diterima tidak boleh minus untuk item ${item.name}`);
+        alert(`Qty tidak boleh minus untuk item ${item.itemName}`);
         return;
       }
-      if (totalReceived > item.qtyOrdered) {
-        alert(`Qty diterima melebihi qty order untuk item ${item.name}`);
+      if (item.qtyReceived + qtyNew > item.qtyOrdered) {
+        alert(`Qty melebihi qty order untuk item ${item.itemName}`);
         return;
       }
     }
 
-    // update items
-    const updatedItems = items.map(item => ({
-      ...item,
-      qtyReceived: item.qtyReceived + (Number(item.qtyNew) || 0),
-      qtyNew: "",
-    }));
-
-    // cek apakah semua sudah RECEIVED
-    const allReceived = updatedItems.every(
-      item => item.qtyReceived >= item.qtyOrdered
-    );
-
-    // cek apakah ada yang sudah diterima sebagian
-    const anyReceived = updatedItems.some(item => item.qtyReceived > 0);
-
-    const newStatus = allReceived
-      ? "RECEIVED"
-      : anyReceived
-      ? "PARTIAL"
-      : "PENDING";
-
-    setItems(updatedItems);
-    setData({ ...data, status: newStatus, items: updatedItems });
-    alert(`Konfirmasi berhasil! Status: ${newStatus}`);
+    try {
+      const res = await confirmReceive(id, {
+        items: items
+          .filter(i => Number(i.qtyNew) > 0)
+          .map(i => ({
+            receiveGoodsItemId: i.id,
+            qtyReceived:        Number(i.qtyNew),
+            note:               i.note,
+          })),
+      });
+      setData(res.data);
+      setItems(res.data.items.map(i => ({ ...i, qtyNew: "" })));
+      alert(`Konfirmasi berhasil! Status: ${res.data.status}`);
+    } catch (err) {
+      alert(err.response?.data?.message || "Gagal konfirmasi");
+    }
   };
+
+  if (loading) return (
+    <div className="flex items-center justify-center h-64">
+      <p className="text-gray-400">Memuat data...</p>
+    </div>
+  );
+
+  if (!data) return null;
+
+  const isReadOnly = data.status === "RECEIVED";
 
   return (
     <div className="max-w-2xl mx-auto space-y-6">
@@ -132,7 +106,7 @@ export default function ReceiveGoodsDetail() {
         <div className="flex justify-between items-start">
           <div>
             <h1 className="text-2xl font-bold text-gray-800">{data.poNumber}</h1>
-            <p className="text-sm text-gray-400 mt-1">Dari PR: {data.prNumber}</p>
+            <p className="text-sm text-gray-400 mt-1">Supplier: {data.supplier}</p>
           </div>
           <span className={`px-3 py-1 rounded-full text-xs font-semibold ${STATUS_STYLE[data.status]}`}>
             {data.status}
@@ -151,7 +125,7 @@ export default function ReceiveGoodsDetail() {
           </div>
           <div>
             <p className="text-xs text-gray-400">Departemen</p>
-            <p className="font-medium text-gray-800 mt-1">{data.dept}</p>
+            <p className="font-medium text-gray-800 mt-1">{data.department}</p>
           </div>
           <div>
             <p className="text-xs text-gray-400">PIC</p>
@@ -166,15 +140,13 @@ export default function ReceiveGoodsDetail() {
           <p className="text-xs text-gray-400 mb-3">Detail Item</p>
           <div className="space-y-3">
             {items.map((item, i) => {
-              const totalReceived = item.qtyReceived + (Number(item.qtyNew) || 0);
               const isComplete = item.qtyReceived >= item.qtyOrdered;
-
               return (
                 <div key={i} className="border border-gray-200 rounded-xl p-4 space-y-3">
 
-                  {/* NAMA + STATUS ITEM */}
+                  {/* NAMA + STATUS */}
                   <div className="flex justify-between items-center">
-                    <p className="font-medium text-gray-800 text-sm">{item.name}</p>
+                    <p className="font-medium text-gray-800 text-sm">{item.itemName}</p>
                     <span className={`text-xs px-2 py-1 rounded-full font-medium ${
                       isComplete
                         ? "bg-green-100 text-green-600"
@@ -182,7 +154,7 @@ export default function ReceiveGoodsDetail() {
                         ? "bg-blue-100 text-blue-600"
                         : "bg-yellow-100 text-yellow-600"
                     }`}>
-                      {isComplete ? "Lengkap" : item.qtyReceived > 0 ? "Sebagian" : "Belum Diterima"}
+                      {item.itemStatus}
                     </span>
                   </div>
 
@@ -203,12 +175,12 @@ export default function ReceiveGoodsDetail() {
                     <div className="bg-gray-50 rounded-lg p-2">
                       <p className="text-gray-400">Sisa</p>
                       <p className="font-semibold text-orange-500 mt-1">
-                        {item.qtyOrdered - item.qtyReceived} {item.unit}
+                        {item.qtyRemaining} {item.unit}
                       </p>
                     </div>
                   </div>
 
-                  {/* INPUT QTY BARU - hanya kalau belum complete & tidak read only */}
+                  {/* INPUT QTY BARU */}
                   {!isReadOnly && !isComplete && (
                     <div className="space-y-2">
                       <div className="flex items-center gap-3">
@@ -220,18 +192,16 @@ export default function ReceiveGoodsDetail() {
                           value={item.qtyNew}
                           onChange={(e) => handleQtyChange(i, e.target.value)}
                           min={0}
-                          max={item.qtyOrdered - item.qtyReceived}
+                          max={item.qtyRemaining}
                           placeholder="0"
                           className="flex-1 border border-gray-300 px-3 py-1.5 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
                         />
                       </div>
-
-                      {/* NOTE per item */}
                       <input
-                        value={item.note}
+                        value={item.note || ""}
                         onChange={(e) => handleNoteChange(i, e.target.value)}
-                        placeholder="Catatan (opsional, misal: kondisi barang, sisa menyusul...)"
-                        className="w-full border border-gray-200 bg-gray-50 px-3 py-2 rounded-lg text-xs text-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                        placeholder="Catatan (opsional)..."
+                        className="w-full border border-gray-200 bg-gray-50 px-3 py-2 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-blue-400"
                       />
                     </div>
                   )}

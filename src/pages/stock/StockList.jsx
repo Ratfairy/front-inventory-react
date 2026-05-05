@@ -1,15 +1,28 @@
-import { useState } from "react";
-
-const data = [
-  { id: 1, item: "Kertas HVS", stock: 3, min: 5, unit: "Pack", updatedAt: "2026-04-23" },
-  { id: 2, item: "Pulpen", stock: 12, min: 10, unit: "PCS", updatedAt: "2026-04-22" },
-  { id: 3, item: "Tinta Printer", stock: 2, min: 5, unit: "PCS", updatedAt: "2026-04-21" },
-  { id: 4, item: "Map Folder", stock: 6, min: 5, unit: "PCS", updatedAt: "2026-04-20" },
-  { id: 5, item: "Stapler", stock: 20, min: 5, unit: "PCS", updatedAt: "2026-04-18" },
-];
+import { useState, useEffect } from "react";
+import { getAllStocks } from "../../api/services/stockService";
 
 export default function StockList() {
-  const [search, setSearch] = useState("");
+  const [data, setData]       = useState([]);
+  const [search, setSearch]   = useState("");
+  const [loading, setLoading] = useState(true);
+  const [error, setError]     = useState(null);
+
+  useEffect(() => {
+    fetchStocks();
+  }, []);
+
+  const fetchStocks = async () => {
+    try {
+      setLoading(true);
+      const res = await getAllStocks();
+      setData(res.data);
+    } catch (err) {
+      setError("Gagal memuat data stock");
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const formatDate = (date) => {
     return new Date(date).toLocaleDateString("id-ID", {
@@ -20,7 +33,19 @@ export default function StockList() {
   };
 
   const filtered = data.filter(d =>
-    d.item.toLowerCase().includes(search.toLowerCase())
+    d.itemName.toLowerCase().includes(search.toLowerCase())
+  );
+
+  if (loading) return (
+    <div className="flex items-center justify-center h-64">
+      <p className="text-gray-400">Memuat data...</p>
+    </div>
+  );
+
+  if (error) return (
+    <div className="flex items-center justify-center h-64">
+      <p className="text-red-500">{error}</p>
+    </div>
   );
 
   return (
@@ -52,23 +77,41 @@ export default function StockList() {
               <th className="p-3 text-left">Stock</th>
               <th className="p-3 text-left">Min</th>
               <th className="p-3 text-left">Unit</th>
+              <th className="p-3 text-left">Status</th>
               <th className="p-3 text-left">Last Update</th>
             </tr>
           </thead>
 
           <tbody>
-            {filtered.map((item, index) => (
-              <tr key={item.id} className="border-t">
-                <td className="p-3">{index + 1}</td>
-                <td className="p-3 font-medium">{item.item}</td>
-                <td className="p-3">{item.stock}</td>
-                <td className="p-3">{item.min}</td>
-                <td className="p-3">{item.unit}</td>
-                <td className="p-3 text-gray-500">
-                  {formatDate(item.updatedAt)}
+            {filtered.length === 0 ? (
+              <tr>
+                <td colSpan={7} className="text-center py-8 text-gray-400">
+                  Tidak ada data
                 </td>
               </tr>
-            ))}
+            ) : (
+              filtered.map((item, index) => (
+                <tr key={item.id} className="border-t">
+                  <td className="p-3">{index + 1}</td>
+                  <td className="p-3 font-medium">{item.itemName}</td>
+                  <td className="p-3">{item.qty}</td>
+                  <td className="p-3">{item.minQty}</td>
+                  <td className="p-3">{item.unit}</td>
+                  <td className="p-3">
+                    <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
+                      item.status === "Low Stock"
+                        ? "bg-red-100 text-red-600"
+                        : "bg-green-100 text-green-600"
+                    }`}>
+                      {item.status}
+                    </span>
+                  </td>
+                  <td className="p-3 text-gray-500">
+                    {formatDate(item.updatedAt)}
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>

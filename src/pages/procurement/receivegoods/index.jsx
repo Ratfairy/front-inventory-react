@@ -1,46 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { ROUTES } from "../../../utils/routes";
-
-const dummyReceive = [
-  {
-    id: 1,
-    poNumber: "PO-2026-001",
-    prNumber: "PR-2026-001",
-    supplier: "PT Sumber Jaya",
-    dept: "IT",
-    pic: "Andi",
-    status: "PENDING",
-    items: [
-      { name: "Kertas HVS", qtyOrdered: 5, qtyReceived: 0, unit: "Pack" },
-      { name: "Tinta Printer", qtyOrdered: 2, qtyReceived: 0, unit: "PCS" },
-    ],
-  },
-  {
-    id: 2,
-    poNumber: "PO-2026-002",
-    prNumber: "PR-2026-002",
-    supplier: "PT Maju Mundur",
-    dept: "Finance",
-    pic: "Budi",
-    status: "PARTIAL",
-    items: [
-      { name: "Pulpen", qtyOrdered: 10, qtyReceived: 5, unit: "PCS" },
-    ],
-  },
-  {
-    id: 3,
-    poNumber: "PO-2026-003",
-    prNumber: "PR-2026-003",
-    supplier: "PT Abadi Jaya",
-    dept: "HR",
-    pic: "Siti",
-    status: "RECEIVED",
-    items: [
-      { name: "Map Folder", qtyOrdered: 20, qtyReceived: 20, unit: "PCS" },
-    ],
-  },
-];
+import { getAllReceiveGoods } from "../../../api/services/receiveGoodsService";
 
 const STATUS_STYLE = {
   PENDING:  "bg-yellow-100 text-yellow-600",
@@ -50,17 +10,41 @@ const STATUS_STYLE = {
 
 export default function ReceiveGoodsIndex() {
   const navigate = useNavigate();
-  const [search, setSearch]           = useState("");
+  const [data, setData]                 = useState([]);
+  const [search, setSearch]             = useState("");
   const [filterStatus, setFilterStatus] = useState("ALL");
+  const [loading, setLoading]           = useState(true);
 
-  const filtered = dummyReceive.filter(r => {
+  useEffect(() => {
+    fetchReceiveGoods();
+  }, []);
+
+  const fetchReceiveGoods = async () => {
+    try {
+      setLoading(true);
+      const res = await getAllReceiveGoods();
+      setData(res.data);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const filtered = data.filter(r => {
     const matchStatus = filterStatus === "ALL" || r.status === filterStatus;
     const matchSearch =
       r.poNumber.toLowerCase().includes(search.toLowerCase()) ||
       r.supplier.toLowerCase().includes(search.toLowerCase()) ||
-      r.dept.toLowerCase().includes(search.toLowerCase());
+      r.department.toLowerCase().includes(search.toLowerCase());
     return matchStatus && matchSearch;
   });
+
+  if (loading) return (
+    <div className="flex items-center justify-center h-64">
+      <p className="text-gray-400">Memuat data...</p>
+    </div>
+  );
 
   return (
     <div className="space-y-6">
@@ -68,13 +52,12 @@ export default function ReceiveGoodsIndex() {
       {/* HEADER */}
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold text-gray-800">Receive Goods</h1>
-        {/* summary badge */}
         <div className="flex gap-2">
           <span className="bg-yellow-100 text-yellow-600 text-xs font-semibold px-3 py-1 rounded-full">
-            {dummyReceive.filter(r => r.status === "PENDING").length} Pending
+            {data.filter(r => r.status === "PENDING").length} Pending
           </span>
           <span className="bg-blue-100 text-blue-600 text-xs font-semibold px-3 py-1 rounded-full">
-            {dummyReceive.filter(r => r.status === "PARTIAL").length} Partial
+            {data.filter(r => r.status === "PARTIAL").length} Partial
           </span>
         </div>
       </div>
@@ -125,7 +108,7 @@ export default function ReceiveGoodsIndex() {
                 <tr key={r.id} className="hover:bg-gray-50 transition">
                   <td className="px-6 py-4 font-medium text-gray-800">{r.poNumber}</td>
                   <td className="px-6 py-4 text-gray-600">{r.supplier}</td>
-                  <td className="px-6 py-4 text-gray-600">{r.dept}</td>
+                  <td className="px-6 py-4 text-gray-600">{r.department}</td>
                   <td className="px-6 py-4 text-gray-600">{r.pic}</td>
                   <td className="px-6 py-4">
                     <span className={`px-3 py-1 rounded-full text-xs font-semibold ${STATUS_STYLE[r.status]}`}>

@@ -1,59 +1,15 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ROUTES } from "../../../utils/routes";
-
-// Fungsi untuk format mata uang Rupiah
-const formatRupiah = (number) => {
-  return new Intl.NumberFormat("id-ID", {
-    style: "currency",
-    currency: "IDR",
-    minimumFractionDigits: 0,
-  }).format(number);
-};
-
-const dummyData = [
-  {
-    id: 1,
-    prNumber: "PR-2026-001",
-    dept: "IT",
-    pic: "Andi",
-    date: "2026-04-20",
-    neededDate: "2026-04-30",
-    status: "DRAFT",
-    items: [
-      { name: "Kertas HVS", qty: 5, unit: "Pack", price: 55000, reason: "Stok habis di ruangan" },
-      { name: "Tinta Printer", qty: 2, unit: "PCS", price: 125000, reason: "Printer sering macet karena tinta habis" },
-    ],
-  },
-  {
-    id: 2,
-    prNumber: "PR-2026-002",
-    dept: "Finance",
-    pic: "Budi",
-    date: "2026-04-21",
-    neededDate: "2026-05-01",
-    status: "WAITING APPROVAL",
-    items: [
-      { name: "Pulpen", qty: 10, unit: "PCS", price: 3500, reason: "Stok pulpen habis" },
-    ],
-  },
-  {
-    id: 3,
-    prNumber: "PR-2026-003",
-    dept: "HR",
-    pic: "Siti",
-    date: "2026-04-22",
-    neededDate: "2026-05-05",
-    status: "APPROVED",
-    items: [
-      { name: "Map Folder", qty: 20, unit: "PCS", price: 5000, reason: "Persiapan event tahunan" },
-    ],
-  },
-];
+import {
+  getPRById,
+  updatePRStatus,
+  deletePR
+} from "../../../api/services/purchaseRequestService";
 
 const STATUS_STYLE = {
   "DRAFT":            "bg-gray-100 text-gray-600",
-  "WAITING APPROVAL": "bg-yellow-100 text-yellow-600",
+  "WAITING_APPROVAL": "bg-yellow-100 text-yellow-600",
   "APPROVED":         "bg-green-100 text-green-600",
   "REJECTED":         "bg-red-100 text-red-600",
 };
@@ -62,25 +18,66 @@ export default function PurchaseRequestDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const [data, setData] = useState(
-    dummyData.find(d => d.id === Number(id))
-  );
+  const [data, setData]     = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError]   = useState(null);
 
-  if (!data) return (
-    <div className="p-6 text-gray-400">Data tidak ditemukan</div>
-  );
+  useEffect(() => {
+    fetchPR();
+  }, [id]);
 
-  const handleDelete = () => {
+  const fetchPR = async () => {
+    try {
+      setLoading(true);
+      const res = await getPRById(id);
+      setData(res.data);
+    } catch (err) {
+      setError("Gagal memuat data PR");
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const formatRupiah = (val) =>
+    new Intl.NumberFormat("id-ID", {
+      style: "currency",
+      currency: "IDR",
+      minimumFractionDigits: 0,
+    }).format(val || 0);
+
+  const handleDelete = async () => {
     if (!confirm("Yakin hapus PR ini?")) return;
-    navigate(ROUTES.PURCHASE_REQUEST);
+    try {
+      await deletePR(id);
+      navigate(ROUTES.PURCHASE_REQUEST);
+    } catch (err) {
+      alert(err.response?.data?.message || "Gagal menghapus PR");
+    }
   };
 
-  const handleSubmitPR = () => {
-    setData({ ...data, status: "WAITING APPROVAL" });
+  const handleSubmitPR = async () => {
+    try {
+      const res = await updatePRStatus(id, { status: "WAITING_APPROVAL" });
+      setData(res.data);
+    } catch (err) {
+      alert(err.response?.data?.message || "Gagal mengubah status PR");
+    }
   };
 
-  // Menghitung Grand Total
-  const grandTotal = data.items.reduce((sum, item) => sum + (item.qty * (item.price || 0)), 0);
+  if (loading) return (
+    <div className="flex items-center justify-center h-64">
+      <p className="text-gray-400">Memuat data...</p>
+    </div>
+  );
+
+  if (error) return (
+    <div className="flex items-center justify-center h-64">
+      <p className="text-red-500">{error}</p>
+    </div>
+  );
+
+  if (!data) return null;
 
   return (
     <div className="max-w-2xl mx-auto space-y-6">
@@ -95,10 +92,10 @@ export default function PurchaseRequestDetail() {
         </button>
         <div className="flex justify-between items-start">
           <div>
-            <h1 className="text-2xl font-bold text-gray-800">
-              {data.prNumber}
-            </h1>
-            <p className="text-sm text-gray-400 mt-1">Dibuat: {data.date}</p>
+            <h1 className="text-2xl font-bold text-gray-800">{data.prNumber}</h1>
+            <p className="text-sm text-gray-400 mt-1">
+              Dibuat: {new Date(data.date).toLocaleDateString("id-ID")}
+            </p>
           </div>
           <span className={`px-3 py-1 rounded-full text-xs font-semibold ${STATUS_STYLE[data.status]}`}>
             {data.status}
@@ -113,7 +110,7 @@ export default function PurchaseRequestDetail() {
         <div className="grid grid-cols-2 gap-4">
           <div>
             <p className="text-xs text-gray-400">Departemen</p>
-            <p className="font-medium text-gray-800 mt-1">{data.dept}</p>
+            <p className="font-medium text-gray-800 mt-1">{data.department}</p>
           </div>
           <div>
             <p className="text-xs text-gray-400">PIC</p>
@@ -121,11 +118,12 @@ export default function PurchaseRequestDetail() {
           </div>
           <div>
             <p className="text-xs text-gray-400">Tanggal Dibutuhkan</p>
-            <p className="font-medium text-gray-800 mt-1">{data.neededDate}</p>
+            <p className="font-medium text-gray-800 mt-1">
+              {new Date(data.neededDate).toLocaleDateString("id-ID")}
+            </p>
           </div>
         </div>
 
-        {/* DIVIDER */}
         <hr className="border-gray-100" />
 
         {/* ITEMS */}
@@ -134,41 +132,39 @@ export default function PurchaseRequestDetail() {
           <div className="space-y-3">
             {data.items.map((item, i) => (
               <div key={i} className="border border-gray-200 rounded-xl p-4 space-y-2">
-
-                {/* ROW 1: Nama, Info Harga & Qty */}
-                <div className="flex justify-between items-center gap-3">
-                  <div className="flex-1">
-                    <p className="font-medium text-gray-800 text-sm">
-                      {item.name}
-                    </p>
-                    <p className="text-xs text-gray-500 mt-1">
-                      {item.qty} {item.unit} × {formatRupiah(item.price)}
-                    </p>
-                  </div>
-                  
-                  {/* Total Harga per Item */}
-                  <div className="text-right">
-                    <p className="text-sm font-semibold text-gray-800">
-                      {formatRupiah(item.qty * item.price)}
-                    </p>
-                  </div>
+                <div className="flex gap-3 items-center">
+                  <p className="flex-1 font-medium text-gray-800 text-sm">{item.itemName}</p>
+                  <span className="text-sm text-gray-600 bg-gray-100 px-3 py-1 rounded-lg">
+                    {item.qty} {item.unit}
+                  </span>
+                  <span className="text-sm text-gray-600 bg-gray-100 px-3 py-1 rounded-lg">
+                    {formatRupiah(item.price)}
+                  </span>
                 </div>
-
-                {/* ROW 2: Note */}
                 {item.reason && (
-                  <p className="text-xs text-gray-500 bg-gray-50 px-3 py-2 rounded-lg mt-2">
+                  <p className="text-xs text-gray-500 bg-gray-50 px-3 py-2 rounded-lg">
                     📝 {item.reason}
                   </p>
                 )}
-
+                <div className="flex justify-end">
+                  <p className="text-xs text-gray-500">
+                    Subtotal: <span className="font-semibold text-gray-700">
+                      {formatRupiah(item.subtotal)}
+                    </span>
+                  </p>
+                </div>
               </div>
             ))}
           </div>
 
-          {/* GRAND TOTAL ROW */}
-          <div className="mt-4 p-4 bg-blue-50 border border-blue-100 rounded-xl flex justify-between items-center">
-            <span className="font-semibold text-blue-900">Total Keseluruhan</span>
-            <span className="text-lg font-bold text-blue-700">{formatRupiah(grandTotal)}</span>
+          {/* GRAND TOTAL */}
+          <div className="flex justify-end mt-3">
+            <div className="bg-blue-50 border border-blue-100 rounded-xl px-5 py-3">
+              <span className="text-sm text-gray-500">Grand Total: </span>
+              <span className="text-lg font-bold text-blue-600">
+                {formatRupiah(data.grandTotal)}
+              </span>
+            </div>
           </div>
         </div>
 
