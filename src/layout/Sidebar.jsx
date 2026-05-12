@@ -15,6 +15,23 @@ export default function Sidebar({ isOpen }) {
     return children?.some(child => isActive(child.path));
   };
 
+  const selectedModule = localStorage.getItem("selectedModule");
+
+  const filteredMenu = MENU.filter((menu) => {
+    if (selectedModule === "purchasing") {
+      return menu.module === "procurement";
+    }
+
+    if (selectedModule === "inventory") {
+      return menu.module === "stock";
+    }
+    if (selectedModule === "report") {
+      return menu.module === "report";
+    }
+
+    return true;
+  });
+
   return (
     <aside
       className={`${isOpen ? "w-52" : "w-16"} bg-slate-900 text-white fixed top-0 left-0 h-screen overflow-y-auto p-4 flex flex-col transition-all duration-300`}
@@ -26,7 +43,7 @@ export default function Sidebar({ isOpen }) {
 
       <nav className="flex flex-col gap-2">
 
-        {MENU.map((menu, index) => {
+        {filteredMenu.map((menu, index) =>{
 
           // 🔹 MENU TANPA CHILD (Dashboard)
           if (!menu.children) {

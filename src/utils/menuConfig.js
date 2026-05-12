@@ -1,38 +1,89 @@
+import { ROUTES } from "./routes";
+
 export const MENU = [
   {
-    title: "Dashboard",
-    path: "/",
-    icon: "💻",
+    title: "Purchase Request",
+    icon: "📝",
+    module: "procurement",
+    path: ROUTES.PURCHASE_REQUEST,
   },
   {
-    title: "Procurement",
+    title: "Review PR",
+    icon: "✅",
+    module: "procurement",
+    path: ROUTES.REVIEW_PR,
+  },
+  {
+    title: "Purchase Order",
     icon: "🛒",
-    children: [
-      { title: "Purchase Request", path: "/procurement/purchaserequest" },
-      { title: "Review PR",        path: "/procurement/reviewpr" },
-      { title: "Purchase Order",   path: "/procurement/purchaseorder" },
-      { title: "Receive Goods",    path: "/procurement/receivegoods" },
-      { title: "Invoice",          path: "/procurement/invoice" },
-    ],
+    module: "procurement",
+    path: ROUTES.PURCHASE_ORDER,
   },
   {
-    title: "Stock",
+    title: "Receive Goods",
+    icon: "📥",
+    module: "procurement",
+    path: ROUTES.RECEIVE_GOODS,
+  },
+  {
+    title: "Invoice",
+    icon: "🧾",
+    module: "procurement",
+    path: ROUTES.INVOICE,
+  },
+
+  {
+    title: "Stock List",
     icon: "📦",
-    children: [
-      { title: "Stock List",          path: "/stock/stockList" },
-      { title: "Stock Movement",      path: "/stock/stockMovement" },
-      { title: "Adjustment",          path: "/stock/adjustment" },
-      { title: "Stock Opname",        path: "/stock/stockOpname" },
-      { title: "Reorder Monitoring",  path: "/stock/reorderMonitoring" },
-    ],
+    module: "stock",
+    path: ROUTES.STOCK_LIST,
   },
   {
-    title: "Report",
-    icon: "📊",
-    children: [
-      { title: "Stock Report",    path: "/report/stock" },
-      { title: "Purchase Report", path: "/report/purchase" },
-      { title: "Request Report",  path: "/report/request" },
-    ],
+    title: "Stock Movement",
+    icon: "🔄",
+    module: "stock",
+    path: ROUTES.STOCK_MOVEMENT,
+  },
+  {
+    title: "Adjustment",
+    icon: "⚙️",
+    module: "stock",
+    path: ROUTES.ADJUSTMENT,
+  },
+  {
+    title: "Category",
+    icon: "🏷️",
+    module: "stock",
+    path: ROUTES.CATEGORY,
+  },
+  {
+    title: "Item",
+    icon: "📋",
+    module: "stock",
+    path: ROUTES.ITEM,
+  },
+  {
+    title: "Approve Item",
+    icon: "✅",
+    module: "stock",
+    path: ROUTES.APPROVE_ITEM,
+  },
+  {
+    title: "Stock Report",
+    icon: "📦",
+    module: "report",
+    path: ROUTES.STOCK_REPORT,
+  },
+  {
+    title: "Purchase Report",
+    icon: "🛒",
+    module: "report",
+    path: ROUTES.PURCHASE_REPORT,
+  },
+  {
+    title: "Request Report",
+    icon: "📝",
+    module: "report",
+    path: ROUTES.REQUEST_REPORT,
   },
 ];

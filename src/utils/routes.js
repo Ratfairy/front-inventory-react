@@ -1,5 +1,5 @@
 export const ROUTES = {
-  DASHBOARD: "/",
+  DASHBOARD: "/dashboard",
 
   // PROCUREMENT
   PURCHASE_REQUEST:        "/procurement/purchaserequest",
@@ -17,21 +17,31 @@ export const ROUTES = {
   INVOICE_DETAIL:          "/procurement/invoice/:id",
 
   // STOCK
-  STOCK_LIST:     "/stock/stockList",
-  STOCK_MOVEMENT: "/stock/stockMovement",
+  STOCK_LIST:     "/stock/stocklist",
+  STOCK_LIST_CREATE: "/stock/stocklist/create",
+  STOCK_LIST_DETAIL: "/stock/stocklist/:id",
+
+  STOCK_MOVEMENT:        "/stock/stockMovement",
+  STOCK_MOVEMENT_CREATE: "/stock/stockMovement/create",
+  STOCK_MOVEMENT_DETAIL: "/stock/stockMovement/:id",
 
   ADJUSTMENT:        "/stock/adjustment",
   ADJUSTMENT_CREATE: "/stock/adjustment/create",
   ADJUSTMENT_DETAIL: "/stock/adjustment/:id",
 
-  STOCK_OPNAME:        "/stock/stockOpname",
-  STOCK_OPNAME_CREATE: "/stock/stockOpname/create",
-  STOCK_OPNAME_DETAIL: "/stock/stockOpname/:id",
+  ITEM: "/stock/item",
+  ITEM_CREATE: "/stock/item/create",
+  ITEM_DETAIL: "/stock/item/:id",
 
-  REORDER: "/stock/reorderMonitoring",
+  APPROVE_ITEM: "/stock/approveitem",
+  APPROVE_ITEM_DETAIL: "/stock/approveitem/:id",
 
   // REPORT
   STOCK_REPORT:    "/report/stock",
   PURCHASE_REPORT: "/report/purchase",
   REQUEST_REPORT:  "/report/request",
+
+  CATEGORY: "/stock/category",
+  CATEGORY_CREATE: "/stock/category/create",
+  CATEGORY_EDIT: "/stock/category/edit/:id",
 };

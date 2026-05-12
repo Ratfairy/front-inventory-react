@@ -1,13 +1,29 @@
 import api from "../axios";
 
-// STOCK
-export const getAllStocks = () => api.get("/stock");
-export const getStockById = (id) => api.get(`/stock/${id}`);
-export const createStock = (data) => api.post("/stock", data);
-export const updateStock = (id, data) => api.put(`/stock/${id}`, data);
-export const deleteStock = (id) => api.delete(`/stock/${id}`);
+export const getAllStocks = async () => {
+  return await api.get("/stock");
+};
 
-// STOCK MOVEMENT
-export const getAllMovements = () => api.get("/stock/movement");
-export const getMovementsByStockId = (stockId) => api.get(`/stock/${stockId}/movement`);
-export const createMovement = (data) => api.post("/stock/movement", data);
+export const getStockById = async (id) => {
+  return await api.get(`/stock/${id}`);
+};
+
+export const createStock = async (data) => {
+  return await api.post("/stock", data);
+};
+
+export const updateStock = async (id, data) => {
+  return await api.put(`/stock/${id}`, data);
+};
+
+export const deleteStock = async (id) => {
+  return await api.delete(`/stock/${id}`);
+};
+
+export const getAllMovements = async () => {
+  return await api.get("/stock/movement");
+};
+
+export const createMovement = async (data) => {
+  return await api.post("/stock/movement", data);
+};
