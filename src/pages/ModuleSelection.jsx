@@ -1,116 +1,305 @@
 import { useNavigate } from "react-router-dom";
-import factoryImg from "../assets/img/factory.jpeg";
+
+const menus = [
+  {
+    key: "purchasing",
+    label: "Purchasing",
+    type: "module",
+    icon: "🛒",
+    color: "blue",
+    description:
+      "Manage purchase request, purchase order, receive goods, invoice, dan dashboard purchasing.",
+    path: "/procurement/dashboard",
+  },
+  {
+    key: "inventory",
+    label: "Inventory",
+    type: "module",
+    icon: "📦",
+    color: "emerald",
+    description:
+      "Manage stock list, stock movement, adjustment, category, item, dan approve item.",
+    path: "/stock/dashboard",
+  },
+  {
+    key: "report",
+    label: "Report",
+    type: "module",
+    icon: "📊",
+    color: "orange",
+    description:
+      "View stock report, purchase report, request report, dan summary laporan.",
+    path: "/report/dashboard",
+  },
+
+  // DEPARTMENT MENU
+  {
+    key: "hr&ga",
+    label: "HR & GA",
+    type: "department",
+    icon: "👥",
+    color: "indigo",
+    description:
+      "Lihat movement stock, penggunaan item, dan kebutuhan inventory department HR & GA.",
+  },
+  {
+    key: "sales",
+    label: "Sales & Marketing",
+    type: "department",
+    icon: "📣",
+    color: "amber",
+    description:
+      "Lihat movement stock, penggunaan item, dan kebutuhan inventory department Sales & Marketing.",
+  },
+  {
+    key: "finance",
+    label: "Finance & Accounting",
+    type: "department",
+    icon: "💰",
+    color: "green",
+    description:
+      "Lihat movement stock, penggunaan item, dan kebutuhan inventory department Finance & Accounting.",
+  },
+  {
+    key: "design",
+    label: "Design",
+    type: "department",
+    icon: "🎨",
+    color: "purple",
+    description:
+      "Lihat movement stock, penggunaan item, dan kebutuhan inventory department Design.",
+  },
+  {
+    key: "ppic",
+    label: "PPIC",
+    type: "department",
+    icon: "📋",
+    color: "cyan",
+    description:
+      "Lihat movement stock, penggunaan item, dan kebutuhan inventory department PPIC.",
+  },
+  {
+    key: "tooling",
+    label: "Tooling",
+    type: "department",
+    icon: "🛠️",
+    color: "yellow",
+    description:
+      "Lihat movement stock, penggunaan item, dan kebutuhan inventory department Tooling.",
+  },
+  {
+    key: "produksi",
+    label: "Produksi",
+    type: "department",
+    icon: "🏭",
+    color: "red",
+    description:
+      "Lihat movement stock, penggunaan item, dan kebutuhan inventory department Produksi.",
+  },
+  {
+    key: "qcqa",
+    label: "QC & QA",
+    type: "department",
+    icon: "✅",
+    color: "teal",
+    description:
+      "Lihat movement stock, penggunaan item, dan kebutuhan inventory department QC & QA.",
+  },
+];
 
 export default function ModuleSelection() {
   const navigate = useNavigate();
 
-  const selectModule = (module) => {
-    localStorage.setItem("selectedModule", module);
-    navigate("/dashboard");
+  const handleSelectMenu = (menu) => {
+    if (menu.type === "module") {
+      localStorage.removeItem("selectedDepartment");
+      localStorage.setItem("selectedModule", menu.key);
+      navigate(menu.path);
+      return;
+    }
+
+    if (menu.type === "department") {
+      localStorage.setItem("selectedDepartment", menu.key);
+      localStorage.setItem("selectedModule", "inventory");
+      navigate("/stock/dashboard");
+    }
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("isLogin");
+    localStorage.removeItem("selectedModule");
+    localStorage.removeItem("selectedDepartment");
+    navigate("/");
+  };
+
+  const getColorClass = (color) => {
+    const colors = {
+      blue: {
+        bg: "bg-blue-100",
+        text: "text-blue-600",
+        title: "text-blue-950",
+        hover: "group-hover:bg-blue-600 group-hover:text-white",
+        badge: "bg-blue-50 text-blue-600",
+      },
+      emerald: {
+        bg: "bg-emerald-100",
+        text: "text-emerald-600",
+        title: "text-emerald-950",
+        hover: "group-hover:bg-emerald-600 group-hover:text-white",
+        badge: "bg-emerald-50 text-emerald-600",
+      },
+      orange: {
+        bg: "bg-orange-100",
+        text: "text-orange-600",
+        title: "text-orange-950",
+        hover: "group-hover:bg-orange-600 group-hover:text-white",
+        badge: "bg-orange-50 text-orange-600",
+      },
+      indigo: {
+        bg: "bg-indigo-100",
+        text: "text-indigo-600",
+        title: "text-indigo-950",
+        hover: "group-hover:bg-indigo-600 group-hover:text-white",
+        badge: "bg-indigo-50 text-indigo-600",
+      },
+      amber: {
+        bg: "bg-amber-100",
+        text: "text-amber-600",
+        title: "text-amber-950",
+        hover: "group-hover:bg-amber-500 group-hover:text-white",
+        badge: "bg-amber-50 text-amber-600",
+      },
+      green: {
+        bg: "bg-green-100",
+        text: "text-green-600",
+        title: "text-green-950",
+        hover: "group-hover:bg-green-600 group-hover:text-white",
+        badge: "bg-green-50 text-green-600",
+      },
+      purple: {
+        bg: "bg-purple-100",
+        text: "text-purple-600",
+        title: "text-purple-950",
+        hover: "group-hover:bg-purple-600 group-hover:text-white",
+        badge: "bg-purple-50 text-purple-600",
+      },
+      cyan: {
+        bg: "bg-cyan-100",
+        text: "text-cyan-600",
+        title: "text-cyan-950",
+        hover: "group-hover:bg-cyan-600 group-hover:text-white",
+        badge: "bg-cyan-50 text-cyan-600",
+      },
+      yellow: {
+        bg: "bg-yellow-100",
+        text: "text-yellow-600",
+        title: "text-yellow-950",
+        hover: "group-hover:bg-yellow-500 group-hover:text-white",
+        badge: "bg-yellow-50 text-yellow-600",
+      },
+      red: {
+        bg: "bg-red-100",
+        text: "text-red-600",
+        title: "text-red-950",
+        hover: "group-hover:bg-red-600 group-hover:text-white",
+        badge: "bg-red-50 text-red-600",
+      },
+      teal: {
+        bg: "bg-teal-100",
+        text: "text-teal-600",
+        title: "text-teal-950",
+        hover: "group-hover:bg-teal-600 group-hover:text-white",
+        badge: "bg-teal-50 text-teal-600",
+      },
+    };
+
+    return colors[color] || colors.blue;
   };
 
   return (
-    <div className="min-h-screen bg-slate-100">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-slate-100">
+      <div className="mx-auto max-w-7xl px-6 py-8">
+        {/* TOP */}
+        <div className="mb-10 flex flex-col justify-between gap-4 md:flex-row md:items-center">
+          <div>
+            <p className="text-sm font-semibold text-blue-600">
+              ERP System
+            </p>
 
-      {/* HERO */}
-      <section
-        className="relative min-h-screen bg-cover bg-center flex items-center justify-center text-white"
-        style={{
-            backgroundImage: `url(${factoryImg})`,
-        }}
-      >
-        {/* Overlay */}
-        <div className="absolute inset-0 bg-black/55"></div>
+            <h1 className="mt-2 text-3xl font-bold text-slate-900">
+              Select ERP Menu
+            </h1>
 
-        {/* Content */}
-        <div className="relative z-10 text-center px-6">
-          <h1 className="text-4xl md:text-6xl font-bold tracking-wide">
-            PT Ito Seisakusho Armada
-          </h1>
-
-          <p className="mt-5 text-lg md:text-xl font-light">
-            Precision Progressive Dies & Manufacturing Company Based in Indonesia
-          </p>
-
-          <div className="mt-10 animate-bounce text-sm text-white/80">
-            Scroll Down
+            <p className="mt-2 text-sm text-slate-500">
+              Pilih module department yang ingin kamu gunakan.
+            </p>
           </div>
+
+          <button
+            onClick={handleLogout}
+            className="rounded-xl bg-slate-900 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-700"
+          >
+            Logout
+          </button>
         </div>
-      </section>
 
-      {/* MODULE SECTION */}
-      <section className="py-24 bg-gradient-to-b from-slate-50 to-blue-100">
-        <div className="max-w-6xl mx-auto px-6">
-
-          <div className="text-center mb-14">
-            <h2 className="text-4xl font-bold text-blue-900">
-              Select ERP Module
+        {/* ALL MENU */}
+        <div className="mb-5 flex flex-col justify-between gap-3 md:flex-row md:items-end">
+          <div>
+            <h2 className="text-xl font-bold text-slate-900">
+              Menu Access
             </h2>
-            <p className="mt-4 text-gray-600">
-              Choose the module you want to access
+
+            <p className="mt-1 text-sm text-slate-500">
+              Module dan department digabung dalam satu halaman agar lebih rapi.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-
-            {/* PURCHASING */}
-            <button
-              onClick={() => selectModule("purchasing")}
-              className="group bg-white rounded-3xl p-12 shadow-lg hover:shadow-2xl transition duration-300 border border-gray-100 text-center"
-            >
-              <div className="w-24 h-24 mx-auto rounded-2xl bg-blue-100 flex items-center justify-center text-5xl group-hover:scale-110 transition">
-                🛒
-              </div>
-
-              <h3 className="mt-8 text-2xl font-bold text-blue-900">
-                Purchasing
-              </h3>
-
-              <p className="mt-3 text-gray-500">
-                Manage purchase request, purchase order, receive goods, and invoice.
-              </p>
-            </button>
-
-            {/* INVENTORY */}
-            <button
-              onClick={() => selectModule("inventory")}
-              className="group bg-white rounded-3xl p-12 shadow-lg hover:shadow-2xl transition duration-300 border border-gray-100 text-center"
-            >
-              <div className="w-24 h-24 mx-auto rounded-2xl bg-blue-100 flex items-center justify-center text-5xl group-hover:scale-110 transition">
-                📦
-              </div>
-
-              <h3 className="mt-8 text-2xl font-bold text-blue-900">
-                Inventory
-              </h3>
-
-              <p className="mt-3 text-gray-500">
-                Manage stock list, stock movement, adjustment, category, and item.
-              </p>
-            </button>
-
-            {/* REPORT */}
-            <button
-            onClick={() => selectModule("report")}
-            className="group bg-white rounded-3xl p-12 shadow-lg hover:shadow-2xl transition duration-300 border border-gray-100 text-center"
-            >
-            <div className="w-24 h-24 mx-auto rounded-2xl bg-blue-100 flex items-center justify-center text-5xl group-hover:scale-110 transition">
-                📊
-            </div>
-
-            <h3 className="mt-8 text-2xl font-bold text-blue-900">
-                Report
-            </h3>
-
-            <p className="mt-3 text-gray-500">
-                View stock report, purchase report, and request report.
-            </p>
-            </button>
-
-          </div>
+          <span className="rounded-full bg-white px-4 py-2 text-xs font-semibold text-slate-600 shadow-sm">
+            {menus.length} Menus
+          </span>
         </div>
-      </section>
 
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {menus.map((menu) => {
+            const color = getColorClass(menu.color);
+
+            return (
+              <button
+                key={`${menu.type}-${menu.key}`}
+                onClick={() => handleSelectMenu(menu)}
+                className="group rounded-3xl border border-gray-100 bg-white p-7 text-left shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl"
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <div
+                    className={`flex h-20 w-20 items-center justify-center rounded-2xl text-5xl transition group-hover:scale-110 ${color.bg} ${color.hover}`}
+                  >
+                    {menu.icon}
+                  </div>
+
+                  <span
+                    className={`rounded-full px-3 py-1 text-xs font-semibold ${color.badge}`}
+                  >
+                    {menu.type === "module" ? "Module" : "Department"}
+                  </span>
+                </div>
+
+                <h3 className={`mt-8 text-2xl font-bold ${color.title}`}>
+                  {menu.label}
+                </h3>
+
+                <p className="mt-3 min-h-[72px] text-sm leading-relaxed text-gray-500">
+                  {menu.description}
+                </p>
+
+                <div className={`mt-6 font-semibold ${color.text}`}>
+                  Open {menu.type === "module" ? "Module" : "Department"} →
+                </div>
+              </button>
+            );
+          })}
+        </div>
+      </div>
     </div>
   );
 }

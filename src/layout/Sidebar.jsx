@@ -6,16 +6,32 @@ export default function Sidebar({ isOpen }) {
   const location = useLocation();
   const [openMenu, setOpenMenu] = useState(null);
 
+  const selectedModule = localStorage.getItem("selectedModule");
+
+  const getModuleTitle = () => {
+    if (selectedModule === "purchasing") {
+      return "Purchasing";
+    }
+
+    if (selectedModule === "inventory") {
+      return "Inventory";
+    }
+
+    if (selectedModule === "report") {
+      return "Report";
+    }
+
+    return "ERP System";
+  };
+
   const isActive = (path) => {
     if (path === "/") return location.pathname === "/";
     return location.pathname === path || location.pathname.startsWith(path + "/");
   };
 
   const isParentActive = (children) => {
-    return children?.some(child => isActive(child.path));
+    return children?.some((child) => isActive(child.path));
   };
-
-  const selectedModule = localStorage.getItem("selectedModule");
 
   const filteredMenu = MENU.filter((menu) => {
     if (selectedModule === "purchasing") {
@@ -25,6 +41,7 @@ export default function Sidebar({ isOpen }) {
     if (selectedModule === "inventory") {
       return menu.module === "stock";
     }
+
     if (selectedModule === "report") {
       return menu.module === "report";
     }
@@ -36,16 +53,21 @@ export default function Sidebar({ isOpen }) {
     <aside
       className={`${isOpen ? "w-52" : "w-16"} bg-slate-900 text-white fixed top-0 left-0 h-screen overflow-y-auto p-4 flex flex-col transition-all duration-300`}
     >
-      {/* LOGO */}
-      <div className="mb-6 text-lg font-bold">
-        {isOpen && "Inventory"}
+      {/* LOGO / MODULE TITLE */}
+      <div className="mb-6 text-lg font-bold flex items-center gap-2">
+        <span className="text-xl">
+          {selectedModule === "purchasing" && "🛒"}
+          {selectedModule === "inventory" && "📦"}
+          {selectedModule === "report" && "📊"}
+          {!selectedModule && "🏢"}
+        </span>
+
+        {isOpen && <span>{getModuleTitle()}</span>}
       </div>
 
       <nav className="flex flex-col gap-2">
-
-        {filteredMenu.map((menu, index) =>{
-
-          // 🔹 MENU TANPA CHILD (Dashboard)
+        {filteredMenu.map((menu, index) => {
+          // MENU TANPA CHILD
           if (!menu.children) {
             return (
               <Link
@@ -53,9 +75,17 @@ export default function Sidebar({ isOpen }) {
                 to={menu.path}
                 className={`py-2 rounded-lg flex items-center
                 ${isOpen ? "px-3 justify-start" : "justify-center"}
-                ${isActive(menu.path) ? "bg-blue-500" : "text-gray-300 hover:bg-slate-700"}`}
+                ${
+                  isActive(menu.path)
+                    ? "bg-blue-500"
+                    : "text-gray-300 hover:bg-slate-700"
+                }`}
               >
-                <div className={`flex items-center w-full ${isOpen ? "gap-2" : "justify-center"}`}>
+                <div
+                  className={`flex items-center w-full ${
+                    isOpen ? "gap-2" : "justify-center"
+                  }`}
+                >
                   <span className="text-lg">{menu.icon}</span>
                   {isOpen && <span>{menu.title}</span>}
                 </div>
@@ -63,7 +93,7 @@ export default function Sidebar({ isOpen }) {
             );
           }
 
-          // 🔹 MENU DENGAN CHILD
+          // MENU DENGAN CHILD
           const isOpened = openMenu === index || isParentActive(menu.children);
 
           return (
@@ -72,12 +102,18 @@ export default function Sidebar({ isOpen }) {
                 onClick={() => setOpenMenu(openMenu === index ? null : index)}
                 className="w-full flex justify-between items-center px-3 py-2 text-sm text-gray-300 hover:bg-slate-700 rounded-lg"
               >
-                <div className={`flex items-center w-full ${isOpen ? "gap-2" : "justify-center"}`}>
+                <div
+                  className={`flex items-center w-full ${
+                    isOpen ? "gap-2" : "justify-center"
+                  }`}
+                >
                   <span className="text-lg">{menu.icon}</span>
                   {isOpen && <span>{menu.title}</span>}
                 </div>
 
-                {isOpen && <span className="text-xs">{isOpened ? "▾" : "▸"}</span>}
+                {isOpen && (
+                  <span className="text-xs">{isOpened ? "▾" : "▸"}</span>
+                )}
               </button>
 
               {/* SUBMENU */}
@@ -103,7 +139,6 @@ export default function Sidebar({ isOpen }) {
             </div>
           );
         })}
-
       </nav>
     </aside>
   );

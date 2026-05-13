@@ -47,10 +47,16 @@ import PurchaseReport from "./pages/report/PurchaseReport";
 import RequestReport from "./pages/report/RequestReport";
 
 // DASHBOARD
-import Dashboard from "./pages/Dashboard";
+import ProcurementDashboard from "./pages/procurement/Dashboard";
+import StockDashboard from "./pages/stock/Dashboard";
+import ReportDashboard from "./pages/report/Dashboard";
 
 // MODULE SELECTION
 import ModuleSelection from "./pages/ModuleSelection";
+
+import LandingPage from "./pages/LandingPage";
+import Login from "./pages/auth/Login";
+import Register from "./pages/auth/Register";
 
 function App() {
   return (
@@ -58,13 +64,20 @@ function App() {
       <Routes>
 
         {/* HALAMAN PERTAMA */}
-        <Route path="/" element={<ModuleSelection />} />
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/modules" element={<ModuleSelection />} />
+
+         <Route path="/modules" element={<ModuleSelection />} />
 
         {/* HALAMAN DENGAN SIDEBAR */}
         <Route element={<MainLayout />}>
 
           {/* DASHBOARD */}
-          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path={ROUTES.PROCUREMENT_DASHBOARD} element={<ProcurementDashboard />} />
+          <Route path={ROUTES.STOCK_DASHBOARD} element={<StockDashboard />} />
+          <Route path={ROUTES.REPORT_DASHBOARD} element={<ReportDashboard />} />
 
           {/* PROCUREMENT */}
           <Route
@@ -212,6 +225,8 @@ function App() {
             path={ROUTES.REQUEST_REPORT}
             element={<RequestReport />}
           />
+
+          
 
         </Route>
       </Routes>

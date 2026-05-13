@@ -1,5 +1,7 @@
 export const ROUTES = {
-  DASHBOARD: "/dashboard",
+  PROCUREMENT_DASHBOARD: "/procurement/dashboard",
+  STOCK_DASHBOARD: "/stock/dashboard",
+  REPORT_DASHBOARD: "/report/dashboard",
 
   // PROCUREMENT
   PURCHASE_REQUEST:        "/procurement/purchaserequest",

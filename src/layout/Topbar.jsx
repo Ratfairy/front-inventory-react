@@ -18,7 +18,7 @@ export default function Topbar({ toggleSidebar }) {
 
   const backToModules = () => {
     localStorage.removeItem("selectedModule");
-    navigate("/");
+    navigate("/modules");
   };
 
   return (

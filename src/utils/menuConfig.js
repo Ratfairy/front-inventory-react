@@ -2,6 +2,12 @@ import { ROUTES } from "./routes";
 
 export const MENU = [
   {
+    title: "Dashboard",
+    icon: "🏠",
+    module: "procurement",
+    path: ROUTES.PROCUREMENT_DASHBOARD,
+  },
+  {
     title: "Purchase Request",
     icon: "📝",
     module: "procurement",
@@ -30,6 +36,13 @@ export const MENU = [
     icon: "🧾",
     module: "procurement",
     path: ROUTES.INVOICE,
+  },
+
+  {
+    title: "Dashboard",
+    icon: "🏠",
+    module: "stock",
+    path: ROUTES.STOCK_DASHBOARD,
   },
 
   {
@@ -68,6 +81,14 @@ export const MENU = [
     module: "stock",
     path: ROUTES.APPROVE_ITEM,
   },
+
+  {
+    title: "Dashboard",
+    icon: "🏠",
+    module: "report",
+    path: ROUTES.REPORT_DASHBOARD,
+  },
+
   {
     title: "Stock Report",
     icon: "📦",

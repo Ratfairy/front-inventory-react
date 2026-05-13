@@ -11,8 +11,6 @@ import {
   PieChart,
   Pie,
   Cell,
-  AreaChart,
-  Area,
 } from "recharts";
 
 const COLORS = [
@@ -60,7 +58,6 @@ const stockData = [
     unit: "KG",
     price: 18500,
     location: "Warehouse A",
-    lastUpdate: "2026-04-28",
   },
   {
     id: 2,
@@ -73,7 +70,6 @@ const stockData = [
     unit: "KG",
     price: 16500,
     location: "Warehouse A",
-    lastUpdate: "2026-04-27",
   },
   {
     id: 3,
@@ -86,7 +82,6 @@ const stockData = [
     unit: "PCS",
     price: 42000,
     location: "Warehouse B",
-    lastUpdate: "2026-04-26",
   },
   {
     id: 4,
@@ -99,7 +94,6 @@ const stockData = [
     unit: "LITER",
     price: 95000,
     location: "Warehouse C",
-    lastUpdate: "2026-04-25",
   },
   {
     id: 5,
@@ -112,7 +106,6 @@ const stockData = [
     unit: "PCS",
     price: 135000,
     location: "Warehouse C",
-    lastUpdate: "2026-04-24",
   },
   {
     id: 6,
@@ -125,7 +118,6 @@ const stockData = [
     unit: "PCS",
     price: 65000,
     location: "Warehouse B",
-    lastUpdate: "2026-04-23",
   },
   {
     id: 7,
@@ -138,7 +130,6 @@ const stockData = [
     unit: "PCS",
     price: 88000,
     location: "Warehouse B",
-    lastUpdate: "2026-04-22",
   },
   {
     id: 8,
@@ -151,7 +142,6 @@ const stockData = [
     unit: "PCS",
     price: 45000,
     location: "Tool Room",
-    lastUpdate: "2026-04-21",
   },
   {
     id: 9,
@@ -164,7 +154,6 @@ const stockData = [
     unit: "PCS",
     price: 250000,
     location: "Tool Room",
-    lastUpdate: "2026-04-20",
   },
   {
     id: 10,
@@ -177,7 +166,6 @@ const stockData = [
     unit: "UNIT",
     price: 3500000,
     location: "Warehouse A",
-    lastUpdate: "2026-04-19",
   },
 ];
 
@@ -195,7 +183,6 @@ const stockMovementData = [
     unit: "KG",
     pic: "Andi",
     reference: "Purchase Order",
-    description: "Material masuk dari supplier",
   },
   {
     id: 2,
@@ -210,7 +197,6 @@ const stockMovementData = [
     unit: "KG",
     pic: "Rudi",
     reference: "Material Planning",
-    description: "Material masuk untuk planning produksi",
   },
   {
     id: 3,
@@ -225,7 +211,6 @@ const stockMovementData = [
     unit: "KG",
     pic: "Sinta",
     reference: "Production Usage",
-    description: "Pemakaian produksi",
   },
   {
     id: 4,
@@ -240,7 +225,6 @@ const stockMovementData = [
     unit: "LITER",
     pic: "Dewi",
     reference: "Purchase Order",
-    description: "Consumable untuk tooling",
   },
   {
     id: 5,
@@ -255,7 +239,6 @@ const stockMovementData = [
     unit: "PCS",
     pic: "Agus",
     reference: "Production Usage",
-    description: "Pemakaian produksi",
   },
   {
     id: 6,
@@ -263,14 +246,13 @@ const stockMovementData = [
     month: "Feb",
     item: "Bearing 6204",
     category: "Spare Part",
-    department: "Maintenance",
+    department: "Tooling",
     departmentKey: "tooling",
     type: "IN",
     qty: 40,
     unit: "PCS",
     pic: "Rudi",
     reference: "Purchase Order",
-    description: "Spare part masuk",
   },
   {
     id: 7,
@@ -285,7 +267,6 @@ const stockMovementData = [
     unit: "PCS",
     pic: "Bima",
     reference: "Maintenance",
-    description: "Penggantian belt mesin",
   },
   {
     id: 8,
@@ -300,7 +281,6 @@ const stockMovementData = [
     unit: "PCS",
     pic: "Andi",
     reference: "Tool Request",
-    description: "Tools untuk trial design",
   },
   {
     id: 9,
@@ -315,7 +295,6 @@ const stockMovementData = [
     unit: "PCS",
     pic: "Agus",
     reference: "Tool Request",
-    description: "Pemakaian tool produksi",
   },
   {
     id: 10,
@@ -330,7 +309,6 @@ const stockMovementData = [
     unit: "UNIT",
     pic: "Dewi",
     reference: "Asset Request",
-    description: "Asset untuk area quality",
   },
   {
     id: 11,
@@ -345,7 +323,6 @@ const stockMovementData = [
     unit: "PCS",
     pic: "Sinta",
     reference: "Production Usage",
-    description: "Pemakaian produksi",
   },
   {
     id: 12,
@@ -360,7 +337,6 @@ const stockMovementData = [
     unit: "KG",
     pic: "Andi",
     reference: "Purchase Order",
-    description: "Material masuk batch kedua",
   },
   {
     id: 13,
@@ -375,7 +351,6 @@ const stockMovementData = [
     unit: "PCS",
     pic: "Rina",
     reference: "Inspection Tools",
-    description: "Tools untuk inspeksi",
   },
   {
     id: 14,
@@ -390,7 +365,6 @@ const stockMovementData = [
     unit: "PCS",
     pic: "Agus",
     reference: "Production Usage",
-    description: "Pemakaian consumable produksi",
   },
   {
     id: 15,
@@ -405,7 +379,6 @@ const stockMovementData = [
     unit: "PCS",
     pic: "Maya",
     reference: "Customer Sample",
-    description: "Sample untuk kebutuhan sales",
   },
   {
     id: 16,
@@ -420,7 +393,6 @@ const stockMovementData = [
     unit: "LITER",
     pic: "Yuni",
     reference: "Training",
-    description: "Kebutuhan training operator",
   },
   {
     id: 17,
@@ -435,7 +407,6 @@ const stockMovementData = [
     unit: "KG",
     pic: "Sinta",
     reference: "Production Usage",
-    description: "Pemakaian material",
   },
   {
     id: 18,
@@ -450,7 +421,6 @@ const stockMovementData = [
     unit: "PCS",
     pic: "Tono",
     reference: "Asset Verification",
-    description: "Pembelian tools berdasarkan approval finance",
   },
   {
     id: 19,
@@ -465,7 +435,6 @@ const stockMovementData = [
     unit: "PCS",
     pic: "Rudi",
     reference: "Material Planning",
-    description: "Penambahan material planning",
   },
   {
     id: 20,
@@ -480,7 +449,6 @@ const stockMovementData = [
     unit: "KG",
     pic: "Agus",
     reference: "Production Usage",
-    description: "Pemakaian produksi",
   },
   {
     id: 21,
@@ -495,7 +463,6 @@ const stockMovementData = [
     unit: "UNIT",
     pic: "Rina",
     reference: "Quality Area",
-    description: "Pemakaian asset quality",
   },
   {
     id: 22,
@@ -510,7 +477,6 @@ const stockMovementData = [
     unit: "LITER",
     pic: "Bima",
     reference: "Tooling Process",
-    description: "Pemakaian tooling",
   },
   {
     id: 23,
@@ -525,7 +491,6 @@ const stockMovementData = [
     unit: "PCS",
     pic: "Andi",
     reference: "Prototype",
-    description: "Kebutuhan prototype",
   },
   {
     id: 24,
@@ -540,7 +505,6 @@ const stockMovementData = [
     unit: "KG",
     pic: "Dewi",
     reference: "Purchase Order",
-    description: "Material masuk",
   },
   {
     id: 25,
@@ -555,7 +519,6 @@ const stockMovementData = [
     unit: "PCS",
     pic: "Bima",
     reference: "Maintenance",
-    description: "Penggantian spare part",
   },
   {
     id: 26,
@@ -570,7 +533,6 @@ const stockMovementData = [
     unit: "PCS",
     pic: "Sinta",
     reference: "Production Usage",
-    description: "Pemakaian produksi",
   },
   {
     id: 27,
@@ -585,7 +547,6 @@ const stockMovementData = [
     unit: "PCS",
     pic: "Rina",
     reference: "Quality Equipment",
-    description: "Kebutuhan quality equipment",
   },
   {
     id: 28,
@@ -600,7 +561,6 @@ const stockMovementData = [
     unit: "KG",
     pic: "Agus",
     reference: "Production Usage",
-    description: "Pemakaian produksi akhir tahun",
   },
 ];
 
@@ -619,13 +579,9 @@ const monthOrder = [
   "Dec",
 ];
 
-export default function StockReport() {
-  const [dateFrom, setDateFrom] = useState("");
-  const [dateTo, setDateTo] = useState("");
-  const [search, setSearch] = useState("");
-  const [filterType, setFilterType] = useState("ALL");
-  const [filterCategory, setFilterCategory] = useState("ALL");
-  const [selectedDepartment, setSelectedDepartment] = useState("ALL");
+export default function StockDashboard() {
+  const initialDepartment = localStorage.getItem("selectedDepartment") || "ALL";
+  const [selectedDepartment, setSelectedDepartment] = useState(initialDepartment);
 
   const stockWithValue = stockData.map((item) => ({
     ...item,
@@ -638,57 +594,27 @@ export default function StockReport() {
         : "Available",
   }));
 
-  const filteredStock = useMemo(() => {
-    return stockWithValue.filter((item) => {
-      const matchCategory =
-        filterCategory === "ALL" || item.categoryKey === filterCategory;
-
-      const matchSearch =
-        item.item.toLowerCase().includes(search.toLowerCase()) ||
-        item.code.toLowerCase().includes(search.toLowerCase()) ||
-        item.category.toLowerCase().includes(search.toLowerCase());
-
-      return matchCategory && matchSearch;
-    });
-  }, [filterCategory, search]);
-
   const filteredMovement = useMemo(() => {
     return stockMovementData.filter((item) => {
-      const matchType = filterType === "ALL" || item.type === filterType;
-      const matchCategory =
-        filterCategory === "ALL" ||
-        item.category.toLowerCase() ===
-          categories.find((cat) => cat.key === filterCategory)?.label.toLowerCase();
-
-      const matchDepartment =
-        selectedDepartment === "ALL" || item.departmentKey === selectedDepartment;
-
-      const matchSearch =
-        item.item.toLowerCase().includes(search.toLowerCase()) ||
-        item.category.toLowerCase().includes(search.toLowerCase()) ||
-        item.pic.toLowerCase().includes(search.toLowerCase()) ||
-        item.department.toLowerCase().includes(search.toLowerCase());
-
-      const matchFrom = !dateFrom || item.date >= dateFrom;
-      const matchTo = !dateTo || item.date <= dateTo;
-
-      return (
-        matchType &&
-        matchCategory &&
-        matchDepartment &&
-        matchSearch &&
-        matchFrom &&
-        matchTo
-      );
+      return selectedDepartment === "ALL" || item.departmentKey === selectedDepartment;
     });
-  }, [filterType, filterCategory, selectedDepartment, search, dateFrom, dateTo]);
+  }, [selectedDepartment]);
 
   const totalItem = stockWithValue.length;
-  const totalStockQty = stockWithValue.reduce((sum, item) => sum + item.stock, 0);
+
+  const totalStockQty = stockWithValue.reduce(
+    (sum, item) => sum + item.stock,
+    0
+  );
+
   const totalStockValue = stockWithValue.reduce(
     (sum, item) => sum + item.totalValue,
     0
   );
+
+  const lowStockItems = stockWithValue
+    .filter((item) => item.status === "Low Stock" || item.status === "Warning")
+    .sort((a, b) => a.stock / a.min - b.stock / b.min);
 
   const lowStockCount = stockWithValue.filter(
     (item) => item.status === "Low Stock"
@@ -701,62 +627,6 @@ export default function StockReport() {
   const totalOut = filteredMovement
     .filter((item) => item.type === "OUT")
     .reduce((sum, item) => sum + item.qty, 0);
-
-  const departmentMovementSummary = departments.map((department) => {
-    const movements = stockMovementData.filter(
-      (item) => item.departmentKey === department.key
-    );
-
-    const inQty = movements
-      .filter((item) => item.type === "IN")
-      .reduce((sum, item) => sum + item.qty, 0);
-
-    const outQty = movements
-      .filter((item) => item.type === "OUT")
-      .reduce((sum, item) => sum + item.qty, 0);
-
-    return {
-      ...department,
-      movement: inQty + outQty,
-      inQty,
-      outQty,
-      transaction: movements.length,
-    };
-  });
-
-  const topDepartment = [...departmentMovementSummary].sort(
-    (a, b) => b.movement - a.movement
-  )[0];
-
-  const departmentYearChart = monthOrder.map((month) => {
-    const row = { month };
-
-    if (selectedDepartment === "ALL") {
-      departments.forEach((department) => {
-        row[department.key] = stockMovementData
-          .filter(
-            (item) => item.month === month && item.departmentKey === department.key
-          )
-          .reduce((sum, item) => sum + item.qty, 0);
-      });
-    } else {
-      const movements = stockMovementData.filter(
-        (item) => item.month === month && item.departmentKey === selectedDepartment
-      );
-
-      row.inQty = movements
-        .filter((item) => item.type === "IN")
-        .reduce((sum, item) => sum + item.qty, 0);
-
-      row.outQty = movements
-        .filter((item) => item.type === "OUT")
-        .reduce((sum, item) => sum + item.qty, 0);
-
-      row.total = row.inQty + row.outQty;
-    }
-
-    return row;
-  });
 
   const categorySummary = categories.map((category) => {
     const items = stockWithValue.filter(
@@ -787,15 +657,78 @@ export default function StockReport() {
     },
   ];
 
-  const lowStockItems = stockWithValue
-    .filter((item) => item.status === "Low Stock" || item.status === "Warning")
-    .sort((a, b) => a.stock / a.min - b.stock / b.min);
+  const departmentMovementSummary = departments.map((department) => {
+    const movements = stockMovementData.filter(
+      (item) => item.departmentKey === department.key
+    );
+
+    const inQty = movements
+      .filter((item) => item.type === "IN")
+      .reduce((sum, item) => sum + item.qty, 0);
+
+    const outQty = movements
+      .filter((item) => item.type === "OUT")
+      .reduce((sum, item) => sum + item.qty, 0);
+
+    return {
+      ...department,
+      movement: inQty + outQty,
+      inQty,
+      outQty,
+      transaction: movements.length,
+    };
+  });
+
+  const topDepartment = [...departmentMovementSummary].sort(
+    (a, b) => b.movement - a.movement
+  )[0];
+
+  const selectedDepartmentLabel =
+    selectedDepartment === "ALL"
+      ? "All Department"
+      : departments.find((item) => item.key === selectedDepartment)?.label;
+
+  const departmentYearChart = monthOrder.map((month) => {
+    const row = { month };
+
+    if (selectedDepartment === "ALL") {
+      departments.forEach((department) => {
+        row[department.key] = stockMovementData
+          .filter(
+            (item) => item.month === month && item.departmentKey === department.key
+          )
+          .reduce((sum, item) => sum + item.qty, 0);
+      });
+    } else {
+      const movements = stockMovementData.filter(
+        (item) => item.month === month && item.departmentKey === selectedDepartment
+      );
+
+      row.inQty = movements
+        .filter((item) => item.type === "IN")
+        .reduce((sum, item) => sum + item.qty, 0);
+
+      row.outQty = movements
+        .filter((item) => item.type === "OUT")
+        .reduce((sum, item) => sum + item.qty, 0);
+    }
+
+    return row;
+  });
 
   const stockValueChart = categorySummary.map((item) => ({
     category: item.name,
     value: item.value,
     qty: item.qty,
   }));
+
+  const recentMovement = [...filteredMovement]
+    .sort((a, b) => new Date(b.date) - new Date(a.date))
+    .slice(0, 6);
+
+  const topStockValue = [...stockWithValue]
+    .sort((a, b) => b.totalValue - a.totalValue)
+    .slice(0, 5);
 
   const formatRupiah = (value) => {
     return new Intl.NumberFormat("id-ID", {
@@ -844,16 +777,8 @@ export default function StockReport() {
     );
   };
 
-  const handleExport = () => {
-    alert("Export Excel/PDF nanti bisa dihubungkan ke backend.");
-  };
-
-  const resetFilter = () => {
-    setDateFrom("");
-    setDateTo("");
-    setSearch("");
-    setFilterType("ALL");
-    setFilterCategory("ALL");
+  const resetDepartment = () => {
+    localStorage.removeItem("selectedDepartment");
     setSelectedDepartment("ALL");
   };
 
@@ -862,193 +787,167 @@ export default function StockReport() {
       <div className="space-y-6">
         {/* HEADER */}
         <div className="overflow-hidden rounded-3xl bg-gradient-to-r from-slate-950 via-blue-950 to-slate-900 p-6 text-white shadow-sm">
-          <div className="flex flex-col justify-between gap-5 lg:flex-row lg:items-center">
+          <div className="flex flex-col justify-between gap-6 lg:flex-row lg:items-center">
             <div>
-              <p className="text-sm font-medium text-blue-200">Report Module</p>
+              <p className="text-sm font-semibold text-blue-200">
+                Inventory Module
+              </p>
+
               <h1 className="mt-2 text-3xl font-bold tracking-tight">
-                Stock Report
+                Stock Dashboard
               </h1>
+
               <p className="mt-2 max-w-3xl text-sm text-slate-300">
-                Ringkasan inventory, pergerakan stock per departemen, low stock
-                alert, dan detail transaksi stock movement selama satu tahun.
+                Ringkasan cepat inventory, nilai stock, low stock alert, dan
+                movement stock berdasarkan department.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3 text-sm">
+              <div className="rounded-2xl border border-white/10 bg-white/10 p-4 backdrop-blur">
+                <p className="text-slate-300">Active Filter</p>
+                <p className="mt-1 text-lg font-bold">
+                  {selectedDepartmentLabel}
+                </p>
+              </div>
+
+              <div className="rounded-2xl border border-white/10 bg-white/10 p-4 backdrop-blur">
+                <p className="text-slate-300">Fiscal Year</p>
+                <p className="mt-1 text-lg font-bold">2026</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* DEPARTMENT FILTER */}
+        <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
+          <div className="mb-4 flex flex-col justify-between gap-3 md:flex-row md:items-center">
+            <div>
+              <h2 className="font-bold text-gray-800">
+                Select Department Movement
+              </h2>
+              <p className="mt-1 text-sm text-gray-500">
+                Pilih department untuk melihat movement stock tahunan, atau pilih semua department.
               </p>
             </div>
 
             <button
-              onClick={handleExport}
-              className="rounded-xl bg-white px-4 py-2 text-sm font-semibold text-slate-900 shadow-sm transition hover:bg-blue-50"
+              onClick={resetDepartment}
+              className="w-full rounded-xl border border-gray-200 px-5 py-2.5 text-sm font-semibold text-gray-600 transition hover:bg-gray-50 md:w-auto"
             >
-              Export Report
+              Reset Department
             </button>
           </div>
-        </div>
 
-        {/* FILTER */}
-        <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-6">
-            <div>
-              <label className="mb-2 block text-xs font-semibold uppercase tracking-wide text-gray-500">
-                Date From
-              </label>
-              <input
-                type="date"
-                value={dateFrom}
-                onChange={(e) => setDateFrom(e.target.value)}
-                className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
-              />
-            </div>
-
-            <div>
-              <label className="mb-2 block text-xs font-semibold uppercase tracking-wide text-gray-500">
-                Date To
-              </label>
-              <input
-                type="date"
-                value={dateTo}
-                onChange={(e) => setDateTo(e.target.value)}
-                className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
-              />
-            </div>
-
-            <div>
-              <label className="mb-2 block text-xs font-semibold uppercase tracking-wide text-gray-500">
-                Movement Type
-              </label>
-              <select
-                value={filterType}
-                onChange={(e) => setFilterType(e.target.value)}
-                className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
-              >
-                <option value="ALL">All Type</option>
-                <option value="IN">Stock IN</option>
-                <option value="OUT">Stock OUT</option>
-              </select>
-            </div>
-
-            <div>
-              <label className="mb-2 block text-xs font-semibold uppercase tracking-wide text-gray-500">
-                Category
-              </label>
-              <select
-                value={filterCategory}
-                onChange={(e) => setFilterCategory(e.target.value)}
-                className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
-              >
-                <option value="ALL">All Category</option>
-                {categories.map((item) => (
-                  <option key={item.key} value={item.key}>
-                    {item.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div>
-              <label className="mb-2 block text-xs font-semibold uppercase tracking-wide text-gray-500">
-                Department
-              </label>
-              <select
-                value={selectedDepartment}
-                onChange={(e) => setSelectedDepartment(e.target.value)}
-                className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
-              >
-                <option value="ALL">Campuran / All Department</option>
-                {departments.map((item) => (
-                  <option key={item.key} value={item.key}>
-                    {item.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div>
-              <label className="mb-2 block text-xs font-semibold uppercase tracking-wide text-gray-500">
-                Search
-              </label>
-              <input
-                type="text"
-                placeholder="Cari item, PIC..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
-              />
-            </div>
-          </div>
-
-          <div className="mt-4 flex justify-end">
+          <div className="flex flex-wrap gap-3">
             <button
-              onClick={resetFilter}
-              className="rounded-xl border border-gray-200 px-5 py-2.5 text-sm font-semibold text-gray-600 transition hover:bg-gray-50"
+              onClick={() => setSelectedDepartment("ALL")}
+              className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
+                selectedDepartment === "ALL"
+                  ? "bg-blue-600 text-white shadow-sm"
+                  : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+              }`}
             >
-              Reset Filter
+              All Department
             </button>
+
+            {departments.map((department, index) => (
+              <button
+                key={department.key}
+                onClick={() => {
+                  localStorage.setItem("selectedDepartment", department.key);
+                  setSelectedDepartment(department.key);
+                }}
+                className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
+                  selectedDepartment === department.key
+                    ? "text-white shadow-sm"
+                    : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                }`}
+                style={{
+                  backgroundColor:
+                    selectedDepartment === department.key
+                      ? COLORS[index % COLORS.length]
+                      : undefined,
+                }}
+              >
+                {department.label}
+              </button>
+            ))}
           </div>
         </div>
 
         {/* KPI CARDS */}
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
-          <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
+          <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-md">
             <div className="flex items-center justify-between">
               <p className="text-sm text-gray-500">Total Item</p>
               <span className="rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-600">
                 Master
               </span>
             </div>
+
             <h2 className="mt-3 text-2xl font-bold text-gray-900">
               {formatNumber(totalItem)}
             </h2>
+
             <p className="mt-2 text-xs text-gray-400">
               Total item yang terdaftar pada inventory.
             </p>
           </div>
 
-          <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
+          <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-md">
             <div className="flex items-center justify-between">
               <p className="text-sm text-gray-500">Total Stock Value</p>
               <span className="rounded-full bg-orange-50 px-3 py-1 text-xs font-semibold text-orange-600">
                 IDR
               </span>
             </div>
+
             <h2 className="mt-3 text-2xl font-bold text-gray-900">
               {formatRupiah(totalStockValue)}
             </h2>
+
             <p className="mt-2 text-xs text-gray-400">
-              Estimasi nilai stok berdasarkan harga item.
+              Estimasi nilai stock berdasarkan harga item.
             </p>
           </div>
 
-          <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
+          <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-md">
             <div className="flex items-center justify-between">
               <p className="text-sm text-gray-500">Top Movement Dept</p>
               <span className="rounded-full bg-purple-50 px-3 py-1 text-xs font-semibold text-purple-600">
                 Highest
               </span>
             </div>
+
             <h2 className="mt-3 text-2xl font-bold text-gray-900">
               {topDepartment?.label}
             </h2>
+
             <p className="mt-2 text-xs text-gray-400">
-              Movement: {formatNumber(topDepartment?.movement)} qty.
+              Movement tertinggi: {formatNumber(topDepartment?.movement)} qty.
             </p>
           </div>
 
-          <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
+          <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-md">
             <div className="flex items-center justify-between">
               <p className="text-sm text-gray-500">Low Stock Item</p>
               <span className="rounded-full bg-red-50 px-3 py-1 text-xs font-semibold text-red-600">
                 Alert
               </span>
             </div>
+
             <h2 className="mt-3 text-2xl font-bold text-red-600">
               {formatNumber(lowStockCount)}
             </h2>
+
             <p className="mt-2 text-xs text-gray-400">
               Item dengan stok di bawah minimum.
             </p>
           </div>
         </div>
 
-        {/* DEPARTMENT MOVEMENT CHART AREA */}
+        {/* MAIN CHART */}
         <div className="grid grid-cols-1 gap-6 xl:grid-cols-3">
           <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm xl:col-span-2">
             <div className="mb-5 flex flex-col justify-between gap-3 md:flex-row md:items-center">
@@ -1056,19 +955,16 @@ export default function StockReport() {
                 <h2 className="font-bold text-gray-800">
                   Yearly Stock Movement by Department
                 </h2>
+
                 <p className="mt-1 text-sm text-gray-500">
                   {selectedDepartment === "ALL"
-                    ? "Campuran: menampilkan movement semua departemen selama satu tahun."
-                    : `Menampilkan movement stock department ${
-                        departments.find((d) => d.key === selectedDepartment)?.label
-                      } selama satu tahun.`}
+                    ? "Menampilkan movement semua department selama satu tahun."
+                    : `Menampilkan movement department ${selectedDepartmentLabel} selama satu tahun.`}
                 </p>
               </div>
 
               <span className="rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-600">
-                {selectedDepartment === "ALL"
-                  ? "All Department"
-                  : departments.find((d) => d.key === selectedDepartment)?.label}
+                {selectedDepartmentLabel}
               </span>
             </div>
 
@@ -1122,8 +1018,9 @@ export default function StockReport() {
               <h2 className="font-bold text-gray-800">
                 Movement by Department
               </h2>
+
               <p className="mt-1 text-sm text-gray-500">
-                Departemen dengan movement stock terbanyak selama setahun.
+                Komposisi movement stock selama satu tahun.
               </p>
             </div>
 
@@ -1142,14 +1039,16 @@ export default function StockReport() {
                       <Cell key={index} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Pie>
+
                   <Tooltip formatter={(value) => `${formatNumber(value)} qty`} />
                 </PieChart>
               </ResponsiveContainer>
             </div>
 
             <div className="mt-3 max-h-48 space-y-2 overflow-y-auto pr-1 text-sm">
-              {departmentMovementSummary
+              {[...departmentMovementSummary]
                 .sort((a, b) => b.movement - a.movement)
+                .slice(0, 6)
                 .map((item, index) => (
                   <div
                     key={item.key}
@@ -1174,93 +1073,14 @@ export default function StockReport() {
           </div>
         </div>
 
-        {/* DEPARTMENT DETAIL SUMMARY */}
-        <div className="rounded-2xl border border-gray-100 bg-white shadow-sm">
-          <div className="border-b border-gray-100 p-5">
-            <h2 className="font-bold text-gray-800">
-              Movement Stock Detail by Department
-            </h2>
-            <p className="mt-1 text-sm text-gray-500">
-              Summary movement IN, OUT, total movement, dan jumlah transaksi
-              setiap departemen.
-            </p>
-          </div>
-
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="bg-slate-50 text-xs uppercase tracking-wide text-gray-500">
-                <tr>
-                  <th className="whitespace-nowrap px-5 py-3 text-left">
-                    Department
-                  </th>
-                  <th className="whitespace-nowrap px-5 py-3 text-right">
-                    Stock IN
-                  </th>
-                  <th className="whitespace-nowrap px-5 py-3 text-right">
-                    Stock OUT
-                  </th>
-                  <th className="whitespace-nowrap px-5 py-3 text-right">
-                    Total Movement
-                  </th>
-                  <th className="whitespace-nowrap px-5 py-3 text-right">
-                    Transaction
-                  </th>
-                  <th className="whitespace-nowrap px-5 py-3 text-center">
-                    Rank
-                  </th>
-                </tr>
-              </thead>
-
-              <tbody className="divide-y divide-gray-100">
-                {[...departmentMovementSummary]
-                  .sort((a, b) => b.movement - a.movement)
-                  .map((item, index) => (
-                    <tr key={item.key} className="transition hover:bg-slate-50">
-                      <td className="whitespace-nowrap px-5 py-3 font-semibold text-gray-800">
-                        {item.label}
-                      </td>
-
-                      <td className="whitespace-nowrap px-5 py-3 text-right font-semibold text-emerald-600">
-                        {formatNumber(item.inQty)}
-                      </td>
-
-                      <td className="whitespace-nowrap px-5 py-3 text-right font-semibold text-red-600">
-                        {formatNumber(item.outQty)}
-                      </td>
-
-                      <td className="whitespace-nowrap px-5 py-3 text-right font-bold text-blue-600">
-                        {formatNumber(item.movement)}
-                      </td>
-
-                      <td className="whitespace-nowrap px-5 py-3 text-right text-gray-600">
-                        {formatNumber(item.transaction)}
-                      </td>
-
-                      <td className="whitespace-nowrap px-5 py-3 text-center">
-                        <span
-                          className={`rounded-full px-3 py-1 text-xs font-semibold ${
-                            index === 0
-                              ? "bg-blue-50 text-blue-600"
-                              : "bg-slate-100 text-slate-600"
-                          }`}
-                        >
-                          #{index + 1}
-                        </span>
-                      </td>
-                    </tr>
-                  ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        {/* STOCK VALUE + STOCK STATUS */}
+        {/* SECONDARY CHART */}
         <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
           <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
             <div className="mb-5">
               <h2 className="font-bold text-gray-800">
                 Stock Value by Category
               </h2>
+
               <p className="mt-1 text-sm text-gray-500">
                 Nilai stock berdasarkan kategori item.
               </p>
@@ -1287,9 +1107,12 @@ export default function StockReport() {
 
           <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
             <div className="mb-5">
-              <h2 className="font-bold text-gray-800">Stock Status</h2>
+              <h2 className="font-bold text-gray-800">
+                Stock Status
+              </h2>
+
               <p className="mt-1 text-sm text-gray-500">
-                Komposisi status stok saat ini.
+                Komposisi status stock saat ini.
               </p>
             </div>
 
@@ -1308,6 +1131,7 @@ export default function StockReport() {
                       <Cell key={index} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Pie>
+
                   <Tooltip />
                 </PieChart>
               </ResponsiveContainer>
@@ -1322,10 +1146,13 @@ export default function StockReport() {
                   <div className="flex items-center gap-2">
                     <span
                       className="h-3 w-3 rounded-full"
-                      style={{ backgroundColor: COLORS[index % COLORS.length] }}
+                      style={{
+                        backgroundColor: COLORS[index % COLORS.length],
+                      }}
                     />
                     <span className="text-gray-600">{item.name}</span>
                   </div>
+
                   <span className="font-semibold text-gray-800">
                     {item.value}
                   </span>
@@ -1335,262 +1162,158 @@ export default function StockReport() {
           </div>
         </div>
 
-        {/* LOW STOCK ALERT */}
-        <div className="rounded-2xl border border-gray-100 bg-white shadow-sm">
-          <div className="border-b border-gray-100 p-5">
-            <h2 className="font-bold text-gray-800">Low Stock Alert</h2>
-            <p className="mt-1 text-sm text-gray-500">
-              Item yang perlu diperhatikan karena mendekati atau di bawah minimum.
-            </p>
+        {/* LOW STOCK + RECENT MOVEMENT */}
+        <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
+          <div className="rounded-2xl border border-gray-100 bg-white shadow-sm">
+            <div className="border-b border-gray-100 p-5">
+              <h2 className="font-bold text-gray-800">
+                Low Stock Alert
+              </h2>
+
+              <p className="mt-1 text-sm text-gray-500">
+                Item yang perlu diperhatikan karena mendekati atau di bawah minimum.
+              </p>
+            </div>
+
+            <div className="divide-y divide-gray-100">
+              {lowStockItems.slice(0, 5).map((item) => {
+                const percentage =
+                  item.min > 0 ? (item.stock / item.min) * 100 : 0;
+
+                return (
+                  <div key={item.id} className="p-5 transition hover:bg-slate-50">
+                    <div className="mb-2 flex items-center justify-between gap-3">
+                      <div>
+                        <p className="font-semibold text-gray-800">
+                          {item.item}
+                        </p>
+                        <p className="text-xs text-gray-400">
+                          {item.category} • {item.location}
+                        </p>
+                      </div>
+
+                      <span
+                        className={`rounded-full px-3 py-1 text-xs font-semibold ${
+                          item.status === "Low Stock"
+                            ? "bg-red-50 text-red-600"
+                            : "bg-orange-50 text-orange-600"
+                        }`}
+                      >
+                        {item.status}
+                      </span>
+                    </div>
+
+                    <div className="mb-2 flex justify-between text-xs text-gray-500">
+                      <span>
+                        Stock: {formatNumber(item.stock)} {item.unit}
+                      </span>
+                      <span>
+                        Min: {formatNumber(item.min)} {item.unit}
+                      </span>
+                    </div>
+
+                    <div className="h-2 rounded-full bg-slate-100">
+                      <div
+                        className={`h-2 rounded-full ${
+                          item.status === "Low Stock"
+                            ? "bg-red-500"
+                            : "bg-orange-500"
+                        }`}
+                        style={{ width: `${Math.min(percentage, 100)}%` }}
+                      ></div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           </div>
 
-          <div className="grid grid-cols-1 gap-4 p-5 md:grid-cols-2 xl:grid-cols-3">
-            {lowStockItems.map((item) => {
-              const percentage = item.min > 0 ? (item.stock / item.min) * 100 : 0;
+          <div className="rounded-2xl border border-gray-100 bg-white shadow-sm">
+            <div className="border-b border-gray-100 p-5">
+              <h2 className="font-bold text-gray-800">
+                Recent Stock Movement
+              </h2>
 
-              return (
-                <div
-                  key={item.id}
-                  className="rounded-2xl border border-gray-100 p-4 transition hover:-translate-y-1 hover:shadow-md"
-                >
-                  <div className="mb-2 flex items-center justify-between gap-3">
+              <p className="mt-1 text-sm text-gray-500">
+                Ringkasan movement terbaru berdasarkan department terpilih.
+              </p>
+            </div>
+
+            <div className="divide-y divide-gray-100">
+              {recentMovement.map((item) => (
+                <div key={item.id} className="p-5 transition hover:bg-slate-50">
+                  <div className="flex items-start justify-between gap-3">
                     <div>
-                      <p className="font-semibold text-gray-800">{item.item}</p>
-                      <p className="text-xs text-gray-400">
-                        {item.category} • {item.location}
+                      <p className="font-semibold text-gray-800">
+                        {item.item}
+                      </p>
+
+                      <p className="mt-1 text-xs text-gray-400">
+                        {item.date} • {item.department} • {item.reference}
                       </p>
                     </div>
 
                     <span
                       className={`rounded-full px-3 py-1 text-xs font-semibold ${
-                        item.status === "Low Stock"
-                          ? "bg-red-50 text-red-600"
-                          : "bg-orange-50 text-orange-600"
+                        item.type === "IN"
+                          ? "bg-emerald-50 text-emerald-600"
+                          : "bg-red-50 text-red-600"
                       }`}
                     >
-                      {item.status}
+                      {item.type}
                     </span>
                   </div>
 
-                  <div className="mb-2 flex justify-between text-xs text-gray-500">
-                    <span>
-                      Stock: {formatNumber(item.stock)} {item.unit}
-                    </span>
-                    <span>
-                      Min: {formatNumber(item.min)} {item.unit}
-                    </span>
-                  </div>
-
-                  <div className="h-2 rounded-full bg-slate-100">
-                    <div
-                      className={`h-2 rounded-full ${
-                        item.status === "Low Stock"
-                          ? "bg-red-500"
-                          : "bg-orange-500"
-                      }`}
-                      style={{ width: `${Math.min(percentage, 100)}%` }}
-                    ></div>
-                  </div>
+                  <p className="mt-3 font-bold text-gray-900">
+                    {formatNumber(item.qty)} {item.unit}
+                  </p>
                 </div>
-              );
-            })}
+              ))}
+            </div>
           </div>
         </div>
 
-        {/* INVENTORY DETAIL TABLE */}
+        {/* TOP STOCK VALUE */}
         <div className="rounded-2xl border border-gray-100 bg-white shadow-sm">
           <div className="border-b border-gray-100 p-5">
-            <h2 className="font-bold text-gray-800">Inventory Detail</h2>
+            <h2 className="font-bold text-gray-800">
+              Top Stock Value
+            </h2>
+
             <p className="mt-1 text-sm text-gray-500">
-              Detail stok item berdasarkan kategori dan status.
+              Lima item dengan estimasi nilai stock terbesar.
             </p>
           </div>
 
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="bg-slate-50 text-xs uppercase tracking-wide text-gray-500">
-                <tr>
-                  <th className="whitespace-nowrap px-5 py-3 text-left">Code</th>
-                  <th className="whitespace-nowrap px-5 py-3 text-left">Item</th>
-                  <th className="whitespace-nowrap px-5 py-3 text-left">Category</th>
-                  <th className="whitespace-nowrap px-5 py-3 text-right">Stock</th>
-                  <th className="whitespace-nowrap px-5 py-3 text-right">Min</th>
-                  <th className="whitespace-nowrap px-5 py-3 text-left">Unit</th>
-                  <th className="whitespace-nowrap px-5 py-3 text-right">Price</th>
-                  <th className="whitespace-nowrap px-5 py-3 text-right">
-                    Stock Value
-                  </th>
-                  <th className="whitespace-nowrap px-5 py-3 text-left">
-                    Location
-                  </th>
-                  <th className="whitespace-nowrap px-5 py-3 text-center">
-                    Status
-                  </th>
-                </tr>
-              </thead>
+          <div className="grid grid-cols-1 gap-4 p-5 md:grid-cols-2 xl:grid-cols-5">
+            {topStockValue.map((item, index) => (
+              <div
+                key={item.id}
+                className="rounded-2xl border border-gray-100 p-4 transition hover:-translate-y-1 hover:shadow-md"
+              >
+                <div className="mb-4 flex items-center justify-between">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 font-bold text-blue-600">
+                    {index + 1}
+                  </div>
 
-              <tbody className="divide-y divide-gray-100">
-                {filteredStock.map((item) => (
-                  <tr key={item.id} className="transition hover:bg-slate-50">
-                    <td className="whitespace-nowrap px-5 py-3 font-semibold text-gray-800">
-                      {item.code}
-                    </td>
-                    <td className="whitespace-nowrap px-5 py-3 text-gray-700">
-                      {item.item}
-                    </td>
-                    <td className="whitespace-nowrap px-5 py-3 text-gray-500">
-                      {item.category}
-                    </td>
-                    <td className="whitespace-nowrap px-5 py-3 text-right font-semibold text-gray-700">
-                      {formatNumber(item.stock)}
-                    </td>
-                    <td className="whitespace-nowrap px-5 py-3 text-right text-gray-500">
-                      {formatNumber(item.min)}
-                    </td>
-                    <td className="whitespace-nowrap px-5 py-3 text-gray-500">
-                      {item.unit}
-                    </td>
-                    <td className="whitespace-nowrap px-5 py-3 text-right text-gray-500">
-                      {formatRupiah(item.price)}
-                    </td>
-                    <td className="whitespace-nowrap px-5 py-3 text-right font-bold text-blue-600">
-                      {formatRupiah(item.totalValue)}
-                    </td>
-                    <td className="whitespace-nowrap px-5 py-3 text-gray-500">
-                      {item.location}
-                    </td>
-                    <td className="whitespace-nowrap px-5 py-3 text-center">
-                      <span
-                        className={`rounded-full px-3 py-1 text-xs font-semibold ${
-                          item.status === "Available"
-                            ? "bg-emerald-50 text-emerald-600"
-                            : item.status === "Warning"
-                            ? "bg-orange-50 text-orange-600"
-                            : "bg-red-50 text-red-600"
-                        }`}
-                      >
-                        {item.status}
-                      </span>
-                    </td>
-                  </tr>
-                ))}
+                  <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600">
+                    {item.unit}
+                  </span>
+                </div>
 
-                {filteredStock.length === 0 && (
-                  <tr>
-                    <td colSpan={10} className="py-8 text-center text-gray-400">
-                      Tidak ada data inventory.
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-        </div>
+                <p className="text-sm font-semibold text-gray-700">
+                  {item.item}
+                </p>
 
-        {/* MOVEMENT DETAIL TABLE */}
-        <div className="rounded-2xl border border-gray-100 bg-white shadow-sm">
-          <div className="border-b border-gray-100 p-5">
-            <h2 className="font-bold text-gray-800">Stock Movement Detail</h2>
-            <p className="mt-1 text-sm text-gray-500">
-              Detail riwayat stock masuk dan keluar berdasarkan filter.
-            </p>
-          </div>
+                <p className="mt-1 text-xs text-gray-400">
+                  {item.code} • {item.category}
+                </p>
 
-          <div className="grid grid-cols-1 gap-4 border-b border-gray-100 p-5 md:grid-cols-3">
-            <div className="rounded-2xl bg-emerald-50 p-4">
-              <p className="text-sm font-medium text-emerald-600">Total IN</p>
-              <h3 className="mt-2 text-2xl font-bold text-emerald-950">
-                {formatNumber(totalIn)}
-              </h3>
-            </div>
-
-            <div className="rounded-2xl bg-red-50 p-4">
-              <p className="text-sm font-medium text-red-600">Total OUT</p>
-              <h3 className="mt-2 text-2xl font-bold text-red-950">
-                {formatNumber(totalOut)}
-              </h3>
-            </div>
-
-            <div className="rounded-2xl bg-blue-50 p-4">
-              <p className="text-sm font-medium text-blue-600">Net Movement</p>
-              <h3 className="mt-2 text-2xl font-bold text-blue-950">
-                {formatNumber(totalIn - totalOut)}
-              </h3>
-            </div>
-          </div>
-
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="bg-slate-50 text-xs uppercase tracking-wide text-gray-500">
-                <tr>
-                  <th className="whitespace-nowrap px-5 py-3 text-left">Date</th>
-                  <th className="whitespace-nowrap px-5 py-3 text-left">Department</th>
-                  <th className="whitespace-nowrap px-5 py-3 text-left">Item</th>
-                  <th className="whitespace-nowrap px-5 py-3 text-left">Category</th>
-                  <th className="whitespace-nowrap px-5 py-3 text-center">Type</th>
-                  <th className="whitespace-nowrap px-5 py-3 text-right">Qty</th>
-                  <th className="whitespace-nowrap px-5 py-3 text-left">Unit</th>
-                  <th className="whitespace-nowrap px-5 py-3 text-left">PIC</th>
-                  <th className="whitespace-nowrap px-5 py-3 text-left">Reference</th>
-                  <th className="whitespace-nowrap px-5 py-3 text-left">
-                    Description
-                  </th>
-                </tr>
-              </thead>
-
-              <tbody className="divide-y divide-gray-100">
-                {filteredMovement.map((item) => (
-                  <tr key={item.id} className="transition hover:bg-slate-50">
-                    <td className="whitespace-nowrap px-5 py-3 text-gray-600">
-                      {item.date}
-                    </td>
-                    <td className="whitespace-nowrap px-5 py-3 font-semibold text-gray-800">
-                      {item.department}
-                    </td>
-                    <td className="whitespace-nowrap px-5 py-3 text-gray-700">
-                      {item.item}
-                    </td>
-                    <td className="whitespace-nowrap px-5 py-3 text-gray-500">
-                      {item.category}
-                    </td>
-                    <td className="whitespace-nowrap px-5 py-3 text-center">
-                      <span
-                        className={`rounded-full px-3 py-1 text-xs font-semibold ${
-                          item.type === "IN"
-                            ? "bg-emerald-50 text-emerald-600"
-                            : "bg-red-50 text-red-600"
-                        }`}
-                      >
-                        {item.type}
-                      </span>
-                    </td>
-                    <td className="whitespace-nowrap px-5 py-3 text-right font-semibold text-gray-700">
-                      {formatNumber(item.qty)}
-                    </td>
-                    <td className="whitespace-nowrap px-5 py-3 text-gray-500">
-                      {item.unit}
-                    </td>
-                    <td className="whitespace-nowrap px-5 py-3 text-gray-500">
-                      {item.pic}
-                    </td>
-                    <td className="whitespace-nowrap px-5 py-3 text-gray-500">
-                      {item.reference}
-                    </td>
-                    <td className="whitespace-nowrap px-5 py-3 text-gray-500">
-                      {item.description}
-                    </td>
-                  </tr>
-                ))}
-
-                {filteredMovement.length === 0 && (
-                  <tr>
-                    <td colSpan={10} className="py-8 text-center text-gray-400">
-                      Tidak ada data movement.
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
+                <p className="mt-3 text-lg font-bold text-gray-950">
+                  {formatRupiah(item.totalValue)}
+                </p>
+              </div>
+            ))}
           </div>
         </div>
       </div>
