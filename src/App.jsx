@@ -47,9 +47,9 @@ import PurchaseReport from "./pages/report/PurchaseReport";
 import RequestReport from "./pages/report/RequestReport";
 
 // DASHBOARD
-import ProcurementDashboard from "./pages/procurement/Dashboard";
-import StockDashboard from "./pages/stock/Dashboard";
-import ReportDashboard from "./pages/report/Dashboard";
+import ProcurementDashboard from "./pages/procurement/dashboard";
+import StockDashboard from "./pages/stock/dashboard";
+import ReportDashboard from "./pages/report/dashboard";
 
 // MODULE SELECTION
 import ModuleSelection from "./pages/ModuleSelection";
