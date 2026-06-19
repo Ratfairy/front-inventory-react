@@ -69,8 +69,6 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/modules" element={<ModuleSelection />} />
 
-         <Route path="/modules" element={<ModuleSelection />} />
-
         {/* HALAMAN DENGAN SIDEBAR */}
         <Route element={<MainLayout />}>
 

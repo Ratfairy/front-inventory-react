@@ -26,10 +26,11 @@ export default function PurchaseRequestIndex() {
     try {
       setLoading(true);
       const res = await getAllPRs();
-      setData(res.data);
+      setData(Array.isArray(res.data) ? res.data : []);
     } catch (err) {
       setError("Gagal memuat data Purchase Request");
       console.error(err);
+      setData([]);
     } finally {
       setLoading(false);
     }
@@ -42,12 +43,17 @@ export default function PurchaseRequestIndex() {
       minimumFractionDigits: 0,
     }).format(val || 0);
 
-  const filtered = data.filter(d => {
-    const matchStatus = filterStatus === "ALL" || d.status === filterStatus;
+  const filtered = data.filter((d) => {
+    const keyword = search.toLowerCase();
+
+    const matchStatus =
+      filterStatus === "ALL" || d.status === filterStatus;
+
     const matchSearch =
-      d.prNumber.toLowerCase().includes(search.toLowerCase()) ||
-      d.department.toLowerCase().includes(search.toLowerCase()) ||
-      d.pic.toLowerCase().includes(search.toLowerCase());
+      (d.prNumber || "").toLowerCase().includes(keyword) ||
+      (d.department || "").toLowerCase().includes(keyword) ||
+      (d.pic || "").toLowerCase().includes(keyword);
+
     return matchStatus && matchSearch;
   });
 

@@ -3,7 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { ROUTES } from "../../../utils/routes";
 import {
   getApprovedPRsForPO,
-  createPO
+  createPO,
+  updatePOStatus,
 } from "../../../api/services/purchaseOrderService";
 
 export default function PurchaseOrderCreate() {

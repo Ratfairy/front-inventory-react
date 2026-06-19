@@ -23,9 +23,10 @@ export default function InvoiceIndex() {
     try {
       setLoading(true);
       const res = await getAllInvoices();
-      setData(res.data);
+      setData(Array.isArray(res.data) ? res.data : []);
     } catch (err) {
       console.error(err);
+      setData([]);
     } finally {
       setLoading(false);
     }
@@ -38,12 +39,17 @@ export default function InvoiceIndex() {
       minimumFractionDigits: 0,
     }).format(val || 0);
 
-  const filtered = data.filter(inv => {
-    const matchStatus = filterStatus === "ALL" || inv.status === filterStatus;
+  const filtered = data.filter((inv) => {
+    const keyword = search.toLowerCase();
+
+    const matchStatus =
+      filterStatus === "ALL" || inv.status === filterStatus;
+
     const matchSearch =
-      inv.invoiceNumber.toLowerCase().includes(search.toLowerCase()) ||
-      inv.poNumber.toLowerCase().includes(search.toLowerCase()) ||
-      inv.supplier.toLowerCase().includes(search.toLowerCase());
+      (inv.invoiceNumber || "").toLowerCase().includes(keyword) ||
+      (inv.poNumber || "").toLowerCase().includes(keyword) ||
+      (inv.supplier || "").toLowerCase().includes(keyword);
+
     return matchStatus && matchSearch;
   });
 

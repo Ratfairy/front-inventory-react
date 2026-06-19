@@ -18,17 +18,18 @@ export default function PurchaseOrderIndex() {
     fetchPOs();
   }, []);
 
-  const fetchPOs = async () => {
-    try {
-      setLoading(true);
-      const res = await getAllPOs();
-      setData(res.data);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
+ const fetchPOs = async () => {
+  try {
+    setLoading(true);
+    const res = await getAllPOs();
+    setData(Array.isArray(res.data) ? res.data : []);
+  } catch (err) {
+    console.error(err);
+    setData([]);
+  } finally {
+    setLoading(false);
+  }
+};
 
   const formatRupiah = (val) =>
     new Intl.NumberFormat("id-ID", {
@@ -37,10 +38,12 @@ export default function PurchaseOrderIndex() {
       minimumFractionDigits: 0,
     }).format(val || 0);
 
-  const filtered = data.filter(po =>
-    po.poNumber.toLowerCase().includes(search.toLowerCase()) ||
-    po.prNumber.toLowerCase().includes(search.toLowerCase()) ||
-    po.supplier.toLowerCase().includes(search.toLowerCase())
+  const keyword = search.toLowerCase();
+
+  const filtered = data.filter((po) =>
+    (po.poNumber || "").toLowerCase().includes(keyword) ||
+    (po.prNumber || "").toLowerCase().includes(keyword) ||
+    (po.supplier || "").toLowerCase().includes(keyword)
   );
 
   if (loading) return (

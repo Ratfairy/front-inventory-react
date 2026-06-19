@@ -31,12 +31,17 @@ export default function ReceiveGoodsIndex() {
     }
   };
 
-  const filtered = data.filter(r => {
-    const matchStatus = filterStatus === "ALL" || r.status === filterStatus;
+  const filtered = data.filter((r) => {
+    const keyword = search.toLowerCase();
+
+    const matchStatus =
+      filterStatus === "ALL" || r.status === filterStatus;
+
     const matchSearch =
-      r.poNumber.toLowerCase().includes(search.toLowerCase()) ||
-      r.supplier.toLowerCase().includes(search.toLowerCase()) ||
-      r.department.toLowerCase().includes(search.toLowerCase());
+      (r.poNumber || "").toLowerCase().includes(keyword) ||
+      (r.supplier || "").toLowerCase().includes(keyword) ||
+      (r.department || "").toLowerCase().includes(keyword);
+
     return matchStatus && matchSearch;
   });
 

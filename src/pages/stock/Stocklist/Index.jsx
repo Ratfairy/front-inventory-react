@@ -30,24 +30,12 @@ export default function StocklistIndex() {
   }, []);
 
   const fetchData = async () => {
-
     try {
-
-      setLoading(true);
-
-      const res =
-        await getAllStocks();
-
-      setData(res.data);
-
+      const res = await getStocks();
+      setData(Array.isArray(res.data) ? res.data : []);
     } catch (err) {
-
       console.error(err);
-
-    } finally {
-
-      setLoading(false);
-
+      setData([]);
     }
   };
 
@@ -77,7 +65,7 @@ export default function StocklistIndex() {
   };
 
   const filtered = data.filter((x) =>
-    x.itemName
+    (x.itemName || "")
       .toLowerCase()
       .includes(search.toLowerCase())
   );

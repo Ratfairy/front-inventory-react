@@ -83,26 +83,29 @@ export default function StocklistCreate() {
     }
   };
 
-  const handleChange = async (e) => {
-
+  const handleChange = (e) => {
     const { name, value } = e.target;
 
-    setForm({
-      ...form,
-      [name]: value,
-    });
-
-    // category berubah
     if (name === "categoryId") {
-
       setForm((prev) => ({
         ...prev,
         categoryId: value,
         itemId: "",
       }));
 
-      fetchItems(value);
+      if (value) {
+        fetchItems(value);
+      } else {
+        setItems([]);
+      }
+
+      return;
     }
+
+    setForm((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
   const handleSubmit = async (e) => {
