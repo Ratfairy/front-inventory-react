@@ -18,9 +18,9 @@ import InvoiceCreate from "./pages/procurement/invoice/create";
 import InvoiceDetail from "./pages/procurement/invoice/detail";
 
 // STOCK
-import StocklistIndex from "./pages/stock/Stocklist/Index";
-import StocklistCreate from "./pages/stock/Stocklist/Create";
-import StocklistDetail from "./pages/stock/Stocklist/Detail";
+import StocklistIndex from "./pages/stock/stocklist/Index";
+import StocklistCreate from "./pages/stock/stocklist/Create";
+import StocklistDetail from "./pages/stock/stocklist/Detail";
 
 import StockMovementIndex from "./pages/stock/stockMovement/Index";
 import StockMovementCreate from "./pages/stock/stockMovement/Create";

@@ -23,9 +23,10 @@ export default function ReceiveGoodsIndex() {
     try {
       setLoading(true);
       const res = await getAllReceiveGoods();
-      setData(res.data);
+      setData(Array.isArray(res.data) ? res.data : []);
     } catch (err) {
       console.error(err);
+      setData([]);
     } finally {
       setLoading(false);
     }
